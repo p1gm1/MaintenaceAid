@@ -4,11 +4,8 @@ FROM python:3.8-slim-buster
 ENV PYTHONUNBUFFERED 1
 
 RUN apt-get update \
-<<<<<<< HEAD
   # dependencies for easyocr and opencv
   && apt-get install ffmpeg libsm6 libxext6  -y \
-=======
->>>>>>> 9d2717ef5935f095172ddbb74991f2243842e967
   # dependencies for building Python packages
   && apt-get install -y build-essential \
   # psycopg2 dependencies

@@ -20,7 +20,7 @@ class ReportViewSet(viewsets.GenericViewSet):
     def get_permissions(self):
         """Assign permissions based on action"""
 
-        if self.action in ['create']:
+        if self.action in ['create_report']:
             permissions = [AllowAny] #IsAuthenticated
         else:
             permissions = [AllowAny] #IsAdminUser

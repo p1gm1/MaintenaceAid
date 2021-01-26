@@ -76,11 +76,7 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "thermoapp.users.apps.UsersConfig",
-<<<<<<< HEAD
     "thermoapp.reports.apps.ReportsConfig",
-=======
-    # Your stuff: custom apps go here
->>>>>>> 9d2717ef5935f095172ddbb74991f2243842e967
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

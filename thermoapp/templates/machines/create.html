@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block head_title %}Creacion de maquina{% endblock %}
+
+{% load i18n %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+      <div class="col-10 offset-1" style="margin-top: 6em;">
+        <h1>Bienvenido al asistente de creacion de maquina</h1>
+  
+        <p class='pt-3'>Para iniciar por favor llena los detalles de la hoja de vida de la maquina</p>
+  
+        <form class="create_machine pt-2" id="create_machine_form" method="post" enctype="multipart/form-data" action="">
+          {% csrf_token %}
+          {% for error in form.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for e in error %}
+                        {{ e }}
+                    {% endfor %}
+                </div>
+          {% endfor %}
+          <div class="form-group">
+            <label for="formFile" class="form-label">Foto de maquina</label>
+            <input class="form-control" type="file" id="formFile"/>
+          </div>
+          <label for="sap_control_input" class="form-label">Codigo SAP</label>
+          <input type="text" id="sap_control_input" class="form-control"/>
+          <label for="model_control_input" class="form-label">Modelo</label>
+          <input type="text" id="model_control_input" class="form-control"/>
+          <label for="serial_control_input" class="form-label">Serial</label>
+          <input type="text" id="serial_control_input" class="form-control"/>
+          <label for="nea_control_input" class="form-label">Clasificacion NEA</label>
+          <input type="text" id="nea_control_input" class="form-control"/>
+          <button class="mt-5 btn btn-warning" type="submit">Registrar maquina &raquo;</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

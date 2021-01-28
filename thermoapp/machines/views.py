@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.renderers import TemplateHTMLRenderer
 
 # Serializers
 from thermoapp.machines.serializers import MachineSerializer
@@ -23,6 +24,8 @@ class MachineViewSet(viewsets.GenericViewSet,
     Handles machine detail and creation.
     """
 
+    renderer_classes = [TemplateHTMLRenderer]
+
     def get_permissions(self):
         """Assign permissions based on action"""
 
@@ -36,16 +39,19 @@ class MachineViewSet(viewsets.GenericViewSet,
     @action(detail=False, methods=['get'])
     def list_machines(self, request):
         # machines = Machine.objects.all()
-        # serializer = MachineSerializer(machines, many=True)
-        # return Response(serializer.data)
+        # self.object = machines
+        # return Response({'machines: self.object'}, status=status.HTTP_200_OK, template_name='machines/detail.html')
         data = {'id': 'GENX-1', 
                 'Registered_by': 'Pepito Perez',
                 'Model': 'EX-T14R',
                 'NEA_Classification': 'High',
                 'Serial': 12568934}
-        return Response(data)
 
-    @action(detail=False, methods=['post'])
+        self.object = data
+        
+        return Response({'machines': self.object}, status=status.HTTP_200_OK, template_name='machines/detail.html')
+
+    @action(detail=False, methods=['get','post'])
     def create_machine(self, request):
         serializer = MachineSerializer(data=request.data)
         
@@ -53,7 +59,7 @@ class MachineViewSet(viewsets.GenericViewSet,
         #   serializer.save()
            return Response(serializer.data, status=status.HTTP_201_CREATED)
         
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_200_OK, template_name='machines/create.html')
         
 
     def retrieve(self, request, pk=None):

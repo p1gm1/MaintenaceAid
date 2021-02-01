@@ -6,3 +6,9 @@ class MachinesConfig(AppConfig):
     """Report app config"""
     name = "thermoapp.machines"
     verbose_name = _("Machines")
+
+    def ready(self):
+        try:
+            import machines.users.signals  # noqa F401
+        except ImportError:
+            pass

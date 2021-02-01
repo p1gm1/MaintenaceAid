@@ -26,27 +26,27 @@ django-debug-toolbar
 
 # Machine leraning
 #------------------------------------------------------------------------------
-numpy
-pandas
-matplotlib
-omegaconf
-albumentations
-torch
+#numpy
+#pandas
+#matplotlib
+#omegaconf
+#albumentations
+#torch
 #torch lite version without gpu processing
 #https://download.pytorch.org/whl/cpu/torch-1.7.0%2Bcpu-cp36-cp36m-linux_x86_64.whl
-torchvision
-pytorch-lightning
-opencv-python
-easyocr
-albumentations
+#torchvision
+#pytorch-lightning
+#opencv-python
+#easyocr
+#albumentations
 
 # Complement
 #------------------------------------------------------------------------------
 #celery
-django_celery_beat
+#django_celery_beat
 #django-core-headers
 #django-environ
-django-extensions
+#django-extensions
 #djangorestframework
 #--user django-crispy-forms
 

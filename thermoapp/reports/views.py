@@ -7,15 +7,15 @@ from rest_framework.response import Response
 from rest_framework.permissions import  AllowAny
 
 # Serializer
-from thermoapp.reports.serializers import ReportSerializer
+#from thermoapp.reports.serializers import ReportSerializer
 
 class ReportViewSet(viewsets.GenericViewSet):
     """Report view set.
-    
+
     Handles report creation, update and delete.
     """
 
-    serializer_class = ReportSerializer
+    #serializer_class = ReportSerializer
 
     def get_permissions(self):
         """Assign permissions based on action"""
@@ -30,11 +30,14 @@ class ReportViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['get'])
     def create_report(self, request):
         """Report creation."""
-        serializer = ReportSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        #serializer = ReportSerializer(data=request.data)
+        #serializer.is_valid(raise_exception=True)
         #serializer.save()
-        data = serializer.data
+        #data = serializer.data
+        data = []
 
         return Response(data, status=status.HTTP_201_CREATED)
 
-    
+
+# def new_report(request):
+#     return render(request, '', context)

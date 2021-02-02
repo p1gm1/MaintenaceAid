@@ -40,9 +40,9 @@ django-debug-toolbar
 #easyocr
 #albumentations
 
+#celery
 # Complement
 #------------------------------------------------------------------------------
-#celery
 #django_celery_beat
 #django-core-headers
 #django-environ
@@ -50,3 +50,6 @@ django-debug-toolbar
 #djangorestframework
 #--user django-crispy-forms
 
+# AWS
+#------------------------------------------------------------------------------
+boto3

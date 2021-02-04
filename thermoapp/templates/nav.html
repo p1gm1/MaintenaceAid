@@ -30,7 +30,11 @@
       {% if request.user.is_authenticated %}
       <li class="nav-item active">
         {# URL provided by django-allauth/account/urls.py #}
-        <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a>
+        <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">{% trans "Mi Perfil" %}</a>
+      </li>
+      <li class="nav-item active">
+        {# URL provided by django-allauth/account/urls.py #}
+        <a class="nav-link" href="{% url 'machines:list_machines' %}">{% trans "Mis maquinas" %}</a>
       </li>
       <li class="nav-item active">
         {# URL provided by django-allauth/account/urls.py #}

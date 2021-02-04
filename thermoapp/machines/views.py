@@ -1,27 +1,30 @@
-#Django
-from django.shortcuts import get_object_or_404
+# Django
+from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import FormView, UpdateView
 
-#Django Rest
-from rest_framework import viewsets, status, mixins
-from rest_framework.decorators import action
+# Models
+from thermoapp.machines.models import Machine
+
+# Forms
+from thermoapp.machines.forms import MachineCreateForm
+
+# Django Rest
+from rest_framework import (status, 
+                            generics)
+
 from rest_framework.response import Response
 from rest_framework.renderers import TemplateHTMLRenderer
-
-# Serializers
-from thermoapp.machines.serializers import MachineSerializer
 
 # Permissions
 from rest_framework.permissions import AllowAny
 
 
-class MachineViewSet(viewsets.GenericViewSet,
-                     mixins.RetrieveModelMixin,
-                     mixins.UpdateModelMixin,):
-                    #  mixins.ListModelMixin,
-                    #  mixins.CreateModelMixin
+class MachineListView(generics.ListAPIView):
+                   
     """Machine view set.
     
-    Handles machine detail and creation.
+    Handles machine detail.
     """
 
     renderer_classes = [TemplateHTMLRenderer]
@@ -29,54 +32,58 @@ class MachineViewSet(viewsets.GenericViewSet,
     def get_permissions(self):
         """Assign permissions based on action"""
 
-        if self.action in ['list_machines', 'create_machine']:
-            permissions = [AllowAny] #IsAuthenticated
-        else:
-            permissions = [AllowAny] #IsAdminUser
+        permissions = [AllowAny] #IsAuthenticated
+        
 
         return [p() for p in permissions]
 
-    @action(detail=False, methods=['get'])
-    def list_machines(self, request):
-        # machines = Machine.objects.all()
-        # self.object = machines
-        # return Response({'machines: self.object'}, status=status.HTTP_200_OK, template_name='machines/detail.html')
-        data = {'id': 'GENX-1', 
-                'Registered_by': 'Pepito Perez',
-                'Model': 'EX-T14R',
-                'NEA_Classification': 'High',
-                'Serial': 12568934}
-
-        self.object = data
+    def get(self, request):
+        machines = Machine.objects.all()
+        self.object = machines
         
-        return Response({'machines': self.object}, status=status.HTTP_200_OK, template_name='machines/detail.html')
+        return Response(data={'machines': self.object}, status=status.HTTP_200_OK, template_name='machines/detail.html')
 
-    @action(detail=False, methods=['get','post'])
-    def create_machine(self, request):
-        serializer = MachineSerializer(data=request.data)
+
+machine_detail_view = MachineListView.as_view()
+
+class MachineCreateView(LoginRequiredMixin, FormView):
+    """Machine create set.
+    
+    Handles machine creation.
+    """
+    model = Machine
+    form_class = MachineCreateForm
+    template_name="machines/create.html"
+
+    def form_valid(self, form):
+        form.save(self.request)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("machines:list_machines")
         
-        if serializer.is_valid():
-        #   serializer.save()
-           return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
-        return Response(serializer.data, status=status.HTTP_200_OK, template_name='machines/create.html')
-        
 
-    def retrieve(self, request, pk=None):
-        #queryset = Machine.objects.all()
-        #machine = get_object_or_404(queryset, pk=pk)
-        #serializer = MachineSerializer(machine)
-        #return Response(serializer.data)
-        pass
+machine_create_view = MachineCreateView.as_view()
 
-    def update(self, request, pk=None):
-        #machine = Machine.object.get(pk=pk)
-        #serializer = MachineSerializer(machine, data=request.data)
-        #if serializer.is_valid():
-        #   serializer.save()
-        #   return Response(serializer.data)
-        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        pass
 
+class MachineUpdateView(LoginRequiredMixin, UpdateView):
+    """Update machine info view."""
+    template_name = 'machines/update.html'
+    model = Machine 
+    fields = ['serial_number', 'neta_classification', 'model', 'sap_code']
+
+    def get_object(self):
+        """Return machine model"""
+        machine = Machine.objects.get(register_by=self.request.user)
+        return machine
+
+    def get_success_url(self):
+        """Return to machines detail"""
+        return reverse('machines:list_machines')
+
+
+machine_update_view = MachineUpdateView.as_view()
+
+    
 
       

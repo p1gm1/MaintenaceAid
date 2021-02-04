@@ -1,15 +1,14 @@
 # Django
-from django.urls import path, include
-
-#Django REST Framework
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 
 # Views
-from thermoapp.machines.views import MachineViewSet
+from thermoapp.machines.views import (machine_detail_view, 
+                                      machine_create_view,
+                                      machine_update_view)
 
-router = DefaultRouter()
-router.register(r'machines', MachineViewSet, basename='machines')
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('list_machines/', view=machine_detail_view, name="list_machines"),
+    path('create_machine/', view=machine_create_view, name="create_machine"),
+    path('update_machine/', view=machine_update_view, name="update_machine"),
 ]

@@ -1,15 +1,16 @@
 from django.db import models
 #from django.contrib.auth.models import User
 
-#Model User
+#Models
 from thermoapp.users.models import User
-#Model Machine
 from thermoapp.machines.models import Machine
+
 
 #Model Report
 class Report(models.Model):
 	#public_id =CharField(max_length=255,primary_key=True, unique=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+	machine = models.ForeignKey(Machine, on_delete=models.CASCADE, blank=True, null=True)
 	created = models.DateField(auto_now_add=True)
 	component = models.CharField(max_length=255)
 	detail = models.CharField(max_length=255)
@@ -43,13 +44,3 @@ class ContentPhoto(models.Model):
 
 	def __str__(self):
 		return'{}-{}'.format(self.base.report.id,self.base.id)
-
-#Model SAP Code
-class SAPCode(models.Model):
-	sap_code = models.CharField(max_length=255,primary_key=True, unique=True)
-	user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-	report = models.ForeignKey(Report, on_delete=models.CASCADE, blank=True, null=True)
-	machine = models.ForeignKey(Machine, on_delete=models.CASCADE, blank=True, null=True)
-
-	def __str__(self):
-		return'{}'.format(self.id)

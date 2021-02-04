@@ -77,6 +77,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     "thermoapp.users.apps.UsersConfig",
     "thermoapp.reports.apps.ReportsConfig",
+    "thermoapp.machines.apps.MachinesConfig"
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

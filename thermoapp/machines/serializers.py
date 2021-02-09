@@ -3,40 +3,48 @@ from rest_framework import serializers
 
 # Models
 from thermoapp.users.models import User
-from thermoapp.machines.models import Machine
-from thermoapp.reports.models import SAPCode
+from thermoapp.machines.models import Machine, SAPCode
 
-class MachineSerializer(serializers.Serializer):
+
+class MachineModelSerializer(serializers.ModelSerializer):
     """Machine serializer"""
-    SAP_code = serializers.CharField(max_length=55)
-    machine_model = serializers.CharField(max_length=125)
-    NEA_classification = serializers.CharField(max_length=25)
-    serial = serializers.CharField(max_length=125)
+    class Meta:
+        """Machine Meta Class."""
+        model = Machine
+
+        fields = '__all__'
+
+                  
+class CreateMachineSerializer(serializers.ModelSerializer):
+    """Create machine serializer."""
     
+    class Meta:
+        model = Machine
+
+        fields = ('model', 
+                 'neta_classification', 
+                 'serial_number',
+                 'sap_code')
+
     def validate(self, data):
         """Validates machine data"""
         
-        sap = data[0]['SAP_code']
+        serial = data['serial']
         
-        try: 
-            SAPCode.objects.get(sap_code=sap)
-            raise serializers.ValidationError('This machine already exists')
-        except:
-            return data
+        if Machine.objects.filter(serial_number=serial).exists():
+            raise serializers.ValidationError('Esta maquina ya existe')
+        
+        return data
 
     def create(self, data):
         """Creates machine in the
         ORM
         """
 
-        data[0]['register_by'] = User.objects.get(username=data[1])
+        data['register_by'] = self.context['user']
 
-        machine = Machine.objects.create(**data[0])
-        SAPCode.objects.create(
-                        sap_code=data[0]['SAP_code'],
-                        user = data[0]['register_by'],
-                        machine = machine
-        )
+        machine = Machine.objects.create(**data)
+        SAPCode.objects.create(sap_code=data['sap_code'])
 
         return machine
 

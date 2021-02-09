@@ -3,7 +3,7 @@ from django import forms
 
 # Models
 from thermoapp.users.models import User
-from thermoapp.machines.models import Machine
+from thermoapp.machines.models import Machine, SAPCode
 
 
 class MachineCreateForm(forms.Form):
@@ -21,21 +21,32 @@ class MachineCreateForm(forms.Form):
                                          widget=forms.TextInput(attrs={'class': 'form-control',
                                                                        'required': True}))
     serial_number = forms.CharField(label='Serial',
-                             max_length=125,
-                             widget=forms.TextInput(attrs={'class':'form-control',
+                                    max_length=125,
+                                    widget=forms.TextInput(attrs={'class':'form-control',
                                                            'required':False}))
+    location = forms.CharField(label='Ubicacion',
+                                max_length=55,
+                                widget=forms.TextInput(attrs={'class': 'form-control',
+                                                              'required': False}))
+    machine_type = forms.CharField(label='Tipo de maquina',
+                                    max_length=55,
+                                    widget=forms.TextInput(attrs={'class': 'form-control',
+                                                                  'required': True}))
 
     def save(self, request):
-        """Save method"""
+        """Save method""" 
 
-        clean_sap = Machine.objects.filter(sap_code=self.cleaned_data['sap_code']).exists()
-
-        if clean_sap:
+        if Machine.objects.filter(serial_number=self.cleaned_data['serial_number']).exists():
             raise forms.ValidationError('Esta maquina ya existe.')
         else:
             data = self.cleaned_data
 
             data['register_by'] = User.objects.get(username=request.user.username)
+
+            sap = SAPCode.objects.create(sap_code = data['sap_code'])
+            sap.save()
+
+            data['sap_code'] = sap 
 
             machine = Machine.objects.create(**data)
             machine.save()

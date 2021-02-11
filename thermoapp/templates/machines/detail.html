@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block head_title %}Tehermoapp: Detalle{% endblock %}
+{% block head_title %}Thermoapp: Detalle{% endblock %}
 
 {% block content %}
 {% load static %}
@@ -30,7 +30,7 @@
         </div>
         <div class="col-sm-10">
             <h3 style="font-weight: 100;">
-                {{ machine.sap_code }}
+                {{ machine.tag_model }}
                 <!--TODO: Creacion de reportes-->
                 <a href="" 
                    class="ml-3 btn btn-sm btn-warning">
@@ -60,7 +60,7 @@
                     <b>Serial: {{ machine.serial_number }}</b>  
                 </div>
                 <div class="col-sm-5">
-                    <b>Registrado por: {{ machine.register_by }}</b>  
+                    <b>Codigo SAP: {{ machine.sap_code }}</b>  
                 </div>
             </div>
             <div class="row mt-1" style="font-size: 1.2em;">

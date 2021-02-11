@@ -32,6 +32,10 @@ class MachineCreateForm(forms.Form):
                                     max_length=55,
                                     widget=forms.TextInput(attrs={'class': 'form-control',
                                                                   'required': True}))
+    tag_model = forms.CharField(label='Tag de maquina',
+                                    max_length=55,
+                                    widget=forms.TextInput(attrs={'class': 'form-control',
+                                                                  'required': True}))
 
     def save(self, request):
         """Save method""" 

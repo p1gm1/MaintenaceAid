@@ -18,7 +18,7 @@ class Machine(models.Model):
 	sap_code = models.ForeignKey(SAPCode, on_delete=models.CASCADE, blank=True, null=True)
 	location = models.CharField(max_length=55, blank=True, null=True)
 	machine_type = models.CharField(max_length=55, blank=True, null=True)
-	tag_model = models.CharField(max_length=55, blank=True, null=True)
+	tag_model = models.CharField(max_length=55, blank=True, null=True, unique=True)
 
 	def __str__(self):
 		return'{}'.format(self.tag_model)

@@ -69,6 +69,14 @@ class MachineCreateView(LoginRequiredMixin, FormView):
 
 machine_create_view = MachineCreateView.as_view()
 
-    
+
+class MachineDetailView(LoginRequiredMixin, DetailView):
+    """Machine detail view."""
+    model=Machine
+    template_name = 'machines/inspect.html'
+    slug_field = 'tag_model'
+    slug_url_kwarg = 'tag_model'
+
+machine_inspect_view = MachineDetailView.as_view()
 
       

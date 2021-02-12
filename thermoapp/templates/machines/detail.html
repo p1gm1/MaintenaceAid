@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block head_title %}Thermoapp: Detalle{% endblock %}
+{% block head_title %}Thermoapp: Maquinas{% endblock %}
 
 {% block content %}
 {% load static %}
 <div class="container mt-5">
     <div class="row">
         <div class="col mt-2 d-flex justify-content-center">
-            <h1>Detalle de maquinas</h1>
+            <h1>Lista de maquinas</h1>
         </div>
     </div>
     <div class="row">
@@ -35,6 +35,10 @@
                 <a href="" 
                    class="ml-3 btn btn-sm btn-warning">
                    Crear reporte
+                </a>
+                <a href="{% url 'machines:detail_machine' machine.tag_model %}" 
+                   class="ml-3 btn btn-sm btn-warning">
+                   Info
                 </a>
                 {% if machine.report_number != 0 %}
                 <!--TODO: Mis reportes detalle-->>

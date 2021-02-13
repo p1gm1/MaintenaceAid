@@ -54,5 +54,3 @@ class MachineCreateForm(forms.Form):
 
             machine = Machine.objects.create(**data)
             machine.save()
-
-            

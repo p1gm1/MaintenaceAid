@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+{{ object.sap_code }} | Actualizacion de datos
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col-6 p-4" id="machine-box">
+                <form action="{% url 'machines:update_machine' machine.tag_model %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {# machine model #}
+                    {{ form.as_p }}
+                    <button class="btn btn-warning btn-block mt-5"type="submit">Actualizar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

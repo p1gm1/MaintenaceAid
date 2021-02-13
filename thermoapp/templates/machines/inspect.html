@@ -65,5 +65,17 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-sm-10 mt-4">
+            <a href="" 
+                class="ml-3 btn btn-sm btn-warning">
+                Crear reporte
+            </a>
+            <a href="{% url 'machines:update_machine' machine.tag_model %}" 
+                class="ml-3 btn btn-sm btn-warning">
+                Actualizar
+            </a>
+        </div>
+    </div>
 </div>
 {% endblock %}

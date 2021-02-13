@@ -6,10 +6,9 @@ from django.views.generic.edit import FormView, UpdateView
 
 # Models
 from thermoapp.machines.models import Machine
-from thermoapp.reports.models import SAPCode
 
 # Form
-from thermoapp.machines.forms import MachineCreateForm
+from thermoapp.machines.forms import MachineCreateForm, MachineUpdateForm
 
 # Django Rest
 from rest_framework import (status, 
@@ -79,4 +78,25 @@ class MachineDetailView(LoginRequiredMixin, DetailView):
 
 machine_inspect_view = MachineDetailView.as_view()
 
-      
+class UpdateMachineView(LoginRequiredMixin, UpdateView):
+    """Update machine view."""
+    template_name = 'machines/update.html'
+    slug_field = 'tag_model'
+    slug_url_kwarg = 'tag_model'
+    model = Machine
+    fields = ('model', 
+              'serial_number', 
+              'sap_code', 
+              'location', 
+              'machine_type', 
+              'tag_model')
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        tag_model = self.object.tag_model
+        return reverse('machines:detail_machine', kwargs={'tag_model': tag_model})
+
+machine_update_view = UpdateMachineView.as_view()

@@ -5,12 +5,14 @@ from django.urls import path
 from thermoapp.machines.views import (machine_detail_view, 
                                       machine_create_view,
                                       machine_inspect_view,
-                                      machine_update_view,)
+                                      machine_update_view,
+                                      machine_create_report_view,)
 
 
 urlpatterns = [
     path('list_machines/', view=machine_detail_view, name="list_machines"),
     path('create_machine/', view=machine_create_view, name="create_machine"),
     path('<tag_model>/', view=machine_inspect_view, name="detail_machine"),
-    path('<tag_model>/update/', view=machine_update_view, name="update_machine")
+    path('<tag_model>/update/', view=machine_update_view, name="update_machine"),
+    path('<tag_model>/create_report/', view=machine_create_report_view, name="create_report"),
 ]

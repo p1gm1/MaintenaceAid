@@ -4,7 +4,6 @@ from django.utils.translation import gettext_lazy as _
 
 # Model
 from thermoapp.users.models import User
-from thermoapp.reports.models import SAPCode
 
 
 #Model Machine
@@ -33,11 +32,10 @@ class Machine(models.Model):
 									 null=True, 
 									 unique=True)
 	report_number = models.IntegerField(default=0)
-	sap_code = models.ForeignKey(SAPCode, 
-								 on_delete=models.CASCADE,
-								 verbose_name=_("Codigo SAP"), 
-								 blank=True, 
-								 null=True)
+	sap_code = models.CharField(_("Codigo SAP"), 
+								max_length=51,
+								blank=True, 
+								null=True)
 	location = models.CharField(_("Ubicacion"),
 								max_length=55, 
 								blank=True, 

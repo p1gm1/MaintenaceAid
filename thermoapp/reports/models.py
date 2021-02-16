@@ -3,12 +3,13 @@ from django.db import models
 
 #Models
 from thermoapp.users.models import User
+from thermoapp.machines.models import Machine
 
 
 #Model Report
 class Report(models.Model):
-	#public_id =CharField(max_length=255,primary_key=True, unique=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+	machine = models.ForeignKey(Machine, on_delete=models.CASCADE, blank=True, null=True)
 	created = models.DateField(auto_now_add=True)
 	component = models.CharField(max_length=255)
 	detail = models.CharField(max_length=255)
@@ -16,36 +17,38 @@ class Report(models.Model):
 	is_active = models.BooleanField(default=True)
 	t_max = models.FloatField(null=True,blank=True)
 	t_min =models.FloatField(null=True,blank=True)
-	bucket_url = models.TextField()
 
 	def __str__(self):
 		return'{}'.format(self.id)
 
-class SAPCode(models.Model):
-	sap_code = models.CharField(max_length=55, primary_key=True, unique=True)
-	report = models.ForeignKey(Report, on_delete=models.CASCADE, blank=True, null=True)
-
-	def __str__(self):
-		return '{}'.format(self.sap_code)
-
 #Model BasePhoto
 class BasePhoto(models.Model):
-	#public_id = CharField(max_length=255,primary_key=True, unique=True)
-	report = models.ForeignKey(Report, on_delete=models.CASCADE, blank=True, null=True)
 	is_valid = models.BooleanField(default=True)
 	is_active = models.BooleanField(default=True)
-	bucket_url = models.TextField()
+	picture = models.ImageField(upload_to='reports/pictures', 
+								blank=True, 
+								null=True)
+
+	class Meta:
+		"""Meta options."""
+		abstract = True
 
 #Model ThermoPhoto
-class ThermoPhoto(models.Model):
-	base = models.ForeignKey(BasePhoto, on_delete=models.CASCADE, blank=True, null=True)
+class ThermoPhoto(BasePhoto):
+	report = models.ForeignKey(Report, on_delete=models.CASCADE, blank=True, null=True)
+	R1TMax = models.FloatField(blank=True, null=True)
+	R1TMin = models.FloatField(blank=True, null=True)
+	R1TMean = models.FloatField(blank=True, null=True)
+	R2TMax = models.FloatField(blank=True, null=True)
+	R2TMin = models.FloatField(blank=True, null=True)
+	R2TMean = models.FloatField(blank=True, null=True)
 
 	def __str__(self):
 		return'{}-{}'.format(self.base.report.id,self.base.id)
 
 #Model ContentPhoto
-class ContentPhoto(models.Model):
-	base = models.ForeignKey(BasePhoto, on_delete=models.CASCADE, blank=True, null=True)
+class ContentPhoto(BasePhoto):
+	report = models.ForeignKey(Report, on_delete=models.CASCADE, blank=True, null=True)
 
 	def __str__(self):
 		return'{}-{}'.format(self.base.report.id,self.base.id)

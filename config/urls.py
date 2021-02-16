@@ -4,7 +4,6 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
-from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
@@ -16,7 +15,7 @@ urlpatterns = [
     # User management
     path("users/", include("thermoapp.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
-    # path("", include(("thermoapp.reports.urls", "reports"), namespace="reports")),
+    # path("reports/", include(("thermoapp.reports.urls", "reports"), namespace="reports")),
     path("machines/", include(("thermoapp.machines.urls", "machines"), namespace="machines")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

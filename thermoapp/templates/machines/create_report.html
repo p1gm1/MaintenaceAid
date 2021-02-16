@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block head_title %}Creacion de reporte{% endblock %}
+
+{% load i18n %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+      <div class="col-10 offset-1" style="margin-top: 6em;">
+        <h1>Bienvenido al asistente de creacion de reportes</h1>
+  
+        <p class='pt-3'>Para iniciar por favor llena los detalles del reporte y su componente</p>
+  
+        <form class="create_machine pt-2" 
+              id="create_machine_form" 
+              method="post" 
+              enctype="multipart/form-data" 
+              action="{% url 'machines:create_report' machine.tag_model %}">
+          {% csrf_token %}
+          
+          {{ form.as_p }}
+
+          <button class="mt-5 btn btn-warning" type="submit">Crear reporte &raquo;</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

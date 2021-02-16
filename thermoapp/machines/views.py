@@ -2,13 +2,14 @@
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView, UpdateView
+from django.views.generic.edit import FormView, UpdateView, FormMixin
 
 # Models
 from thermoapp.machines.models import Machine
+from thermoapp.reports.models import Report
 
 # Form
-from thermoapp.machines.forms import MachineCreateForm
+from thermoapp.machines.forms import MachineCreateForm, ReportCreateForm
 
 # Django Rest
 from rest_framework import (status, 
@@ -101,3 +102,26 @@ class UpdateMachineView(LoginRequiredMixin, UpdateView):
         return reverse('machines:detail_machine', kwargs={'tag_model': tag_model})
 
 machine_update_view = UpdateMachineView.as_view()
+
+class MachineReportCreateView(LoginRequiredMixin, FormMixin):
+    """Machine report create
+    view.
+    """
+    template_name='machines/create_report.html'
+    slug_field='tag_model'
+    slug_url_kwarg='tag_model'
+    model=Machine
+    form_class=ReportCreateForm
+
+    def get_form_kwargs(self):
+        # TODO: include Machine tag model for report creation.
+        return super().get_form_kwargs()
+
+    def form_valid(self, form):
+        form.save(self.request)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("machines:list_machines")
+
+machine_create_report_view = MachineReportCreateView.as_view()

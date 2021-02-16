@@ -16,7 +16,7 @@ urlpatterns = [
     # User management
     path("users/", include("thermoapp.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
-    path("", include(("thermoapp.reports.urls", "reports"), namespace="reports")),
+    # path("", include(("thermoapp.reports.urls", "reports"), namespace="reports")),
     path("machines/", include(("thermoapp.machines.urls", "machines"), namespace="machines")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

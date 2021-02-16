@@ -8,7 +8,7 @@ from django.views.generic.edit import FormView, UpdateView
 from thermoapp.machines.models import Machine
 
 # Form
-from thermoapp.machines.forms import MachineCreateForm, MachineUpdateForm
+from thermoapp.machines.forms import MachineCreateForm
 
 # Django Rest
 from rest_framework import (status, 
@@ -84,7 +84,8 @@ class UpdateMachineView(LoginRequiredMixin, UpdateView):
     slug_field = 'tag_model'
     slug_url_kwarg = 'tag_model'
     model = Machine
-    fields = ('model', 
+    fields = ('picture',
+              'model', 
               'serial_number', 
               'sap_code', 
               'location', 

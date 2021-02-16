@@ -6,9 +6,17 @@
 {% endblock %}
 
 {% block content %}
+    <div class="container" style="margin-top: 6em;">
+        <div class="row">
+            <div class="col mt-2 d-flex justify-content-center">
+                <h2>Actualiza los campos que desees de tu maquina.</h2>
+            </div>
+        </div>
+    </div>
+    
     <div class="container">
         <div class="row justify-content-md-center">
-            <div class="col-6 p-4" id="machine-box">
+            <div class="col-6 pt-5" id="machine-box">
                 <form action="{% url 'machines:update_machine' machine.tag_model %}" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     {# machine model #}

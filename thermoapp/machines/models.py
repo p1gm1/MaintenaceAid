@@ -11,9 +11,7 @@ class Machine(models.Model):
 	
 	register_by = models.ForeignKey(User, 
 									on_delete=models.CASCADE,
-									verbose_name=_("Registrado por"), 
-									blank=True, 
-									null=True) 
+									verbose_name=_("Registrado por")) 
 	picture = models.ImageField(_("Foto"),
 								upload_to='machines/pictures',
 								blank=True,

@@ -15,8 +15,8 @@ class Report(models.Model):
 	detail = models.CharField(max_length=255)
 	action = models.CharField(max_length=255, blank=True, null=True)
 	is_active = models.BooleanField(default=True)
-	t_max = models.FloatField(null=True,blank=True)
-	t_min =models.FloatField(null=True,blank=True)
+	t_max = models.FloatField(default=0.0,null=True,blank=True)
+	t_min =models.FloatField(default=0.0,null=True,blank=True)
 
 	def __str__(self):
 		return'{}'.format(self.id)

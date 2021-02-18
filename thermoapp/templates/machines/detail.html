@@ -35,7 +35,7 @@
         <div class="col-sm-10">
             <h3 style="font-weight: 100;">
                 {{ machine.tag_model }}
-                <!--TODO: Creacion de reportes-->
+                <!--TODO: Creacion de reportes, sin hardcodear-->
                 <a href="{% url 'machines:create_report' machine.tag_model %}" 
                    class="ml-3 btn btn-sm btn-warning">
                    Crear reporte
@@ -45,7 +45,7 @@
                    Info
                 </a>
                 {% if machine.report_number != 0 %}
-                <!--TODO: Mis reportes detalle-->>
+                <!--TODO: Mis reportes detalle-->
                 <a href=""
                    class="ml-3 btn btn-sm btn-warning">
                    Mis reportes

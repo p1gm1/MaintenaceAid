@@ -87,7 +87,7 @@ class ReportCreateForm(forms.Form):
 
         data = self.cleaned_data
         data['user'] = User.objects.get(username=request.user.username)
-        # data['machine'] = Machine.objects.get(tag_model=tag)
+        data['machine'] = Machine.objects.get(tag_model=self.tag_model)
 
         thermo_photo = data.pop('thermo_photo')
         content_photo = data.pop('content_photo')

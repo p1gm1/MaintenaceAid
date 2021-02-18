@@ -12,11 +12,11 @@
   
         <p class='pt-3'>Para iniciar por favor llena los detalles del reporte y su componente</p>
   
-        <form class="create_machine pt-2" 
-              id="create_machine_form" 
+        <form class="create_report" 
+              id="create_report_form" 
               method="post" 
               enctype="multipart/form-data" 
-              action="{% url 'machines:create_report' machine.tag_model %}">
+              action="{% url 'machines:create_report' form.instance %}">
           {% csrf_token %}
           
           {{ form.as_p }}

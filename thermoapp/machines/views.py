@@ -1,8 +1,9 @@
 # Django
+from thermoapp.reports.models import Report
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView, UpdateView, FormMixin
+from django.views.generic.edit import CreateView, FormView, UpdateView
 
 # Models
 from thermoapp.machines.models import Machine
@@ -103,23 +104,36 @@ class UpdateMachineView(LoginRequiredMixin, UpdateView):
 
 machine_update_view = UpdateMachineView.as_view()
 
-class MachineReportCreateView(LoginRequiredMixin, FormMixin):
+
+class MachineReportCreateView(LoginRequiredMixin, CreateView):
     """Machine report create
     view.
     """
     template_name='machines/create_report.html'
-    slug_field='tag_model'
-    slug_url_kwarg='tag_model'
-    model=Machine
-    form_class=ReportCreateForm
+    model=Report
+    fields = ['component', 'detail', 'action', 't_max', 't_min']
+    queryset = Machine.objects.all()
+    
+    def __init__(self):
+        self.tag_model='PME-345'
+        return super().__init__()
 
-    def get_form_kwargs(self):
-        # TODO: include Machine tag model for report creation.
-        return super().get_form_kwargs()
+    def get(self, request, *args, **kwargs):
+        """Modified version of
+        get method to catch tag_model.
+        """
+        self.tag_model = kwargs.get('tag_model')
+        return super().get(self, request, *args, **kwargs)
 
     def form_valid(self, form):
-        form.save(self.request)
-        return super().form_valid(form)
+        
+        machine = self.queryset.get(tag_model=str(self.tag_model))
+        form.instance.user = self.request.user
+        form.instance.machine = machine 
+        machine.report_number += 1
+        machine.save()
+        form.save()
+        return super(MachineReportCreateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse("machines:list_machines")

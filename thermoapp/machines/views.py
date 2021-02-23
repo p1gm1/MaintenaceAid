@@ -1,16 +1,14 @@
 # Django
-from thermoapp.reports.models import Report
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, FormView, UpdateView
+from django.views.generic.edit import  FormView, UpdateView
 
 # Models
 from thermoapp.machines.models import Machine
-from thermoapp.reports.models import Report
 
 # Form
-from thermoapp.machines.forms import MachineCreateForm, ReportCreateForm
+from thermoapp.machines.forms import MachineCreateForm
 
 # Django Rest
 from rest_framework import (status, 
@@ -18,7 +16,6 @@ from rest_framework import (status,
 
 from rest_framework.response import Response
 from rest_framework.renderers import TemplateHTMLRenderer
-#from rest_framework.parsers import MultiPartParser
 
 # Permissions
 from rest_framework.permissions import AllowAny
@@ -80,6 +77,7 @@ class MachineDetailView(LoginRequiredMixin, DetailView):
 
 machine_inspect_view = MachineDetailView.as_view()
 
+
 class UpdateMachineView(LoginRequiredMixin, UpdateView):
     """Update machine view."""
     template_name = 'machines/update.html'
@@ -103,39 +101,3 @@ class UpdateMachineView(LoginRequiredMixin, UpdateView):
         return reverse('machines:detail_machine', kwargs={'tag_model': tag_model})
 
 machine_update_view = UpdateMachineView.as_view()
-
-
-class MachineReportCreateView(LoginRequiredMixin, CreateView):
-    """Machine report create
-    view.
-    """
-    template_name='machines/create_report.html'
-    model=Report
-    fields = ['component', 'detail', 'action', 't_max', 't_min']
-    queryset = Machine.objects.all()
-    
-    def __init__(self):
-        self.tag_model='PME-345'
-        return super().__init__()
-
-    def get(self, request, *args, **kwargs):
-        """Modified version of
-        get method to catch tag_model.
-        """
-        self.tag_model = kwargs.get('tag_model')
-        return super().get(self, request, *args, **kwargs)
-
-    def form_valid(self, form):
-        
-        machine = self.queryset.get(tag_model=str(self.tag_model))
-        form.instance.user = self.request.user
-        form.instance.machine = machine 
-        machine.report_number += 1
-        machine.save()
-        form.save()
-        return super(MachineReportCreateView, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse("machines:list_machines")
-
-machine_create_report_view = MachineReportCreateView.as_view()

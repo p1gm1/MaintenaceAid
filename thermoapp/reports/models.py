@@ -6,8 +6,8 @@ from thermoapp.users.models import User
 from thermoapp.machines.models import Machine
 
 
-#Model Report
-class Report(models.Model):
+#Model Component
+class Component(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
 	machine = models.ForeignKey(Machine, on_delete=models.CASCADE, blank=True, null=True)
 	created = models.DateField(auto_now_add=True)
@@ -35,7 +35,7 @@ class BasePhoto(models.Model):
 
 #Model ThermoPhoto
 class ThermoPhoto(BasePhoto):
-	report = models.ForeignKey(Report, on_delete=models.CASCADE, blank=True, null=True)
+	report = models.ForeignKey(Component, on_delete=models.CASCADE, blank=True, null=True)
 	R1TMax = models.FloatField(blank=True, null=True)
 	R1TMin = models.FloatField(blank=True, null=True)
 	R1TMean = models.FloatField(blank=True, null=True)
@@ -48,7 +48,7 @@ class ThermoPhoto(BasePhoto):
 
 #Model ContentPhoto
 class ContentPhoto(BasePhoto):
-	report = models.ForeignKey(Report, on_delete=models.CASCADE, blank=True, null=True)
+	report = models.ForeignKey(Component, on_delete=models.CASCADE, blank=True, null=True)
 
 	def __str__(self):
 		return'{}-{}'.format(self.base.report.id,self.base.id)

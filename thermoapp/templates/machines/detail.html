@@ -36,7 +36,7 @@
             <h3 style="font-weight: 100;">
                 {{ machine.tag_model }}
                 <!--TODO: Creacion de reportes, sin hardcodear-->
-                <a href="{% url 'machines:create_report' machine.tag_model %}" 
+                <a href="{% url 'reports:create_report' %}" 
                    class="ml-3 btn btn-sm btn-warning">
                    Crear reporte
                 </a>

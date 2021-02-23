@@ -3,6 +3,7 @@
 {% block head_title %}Creacion de reporte{% endblock %}
 
 {% load i18n %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 <div class="container">
@@ -10,16 +11,16 @@
       <div class="col-10 offset-1" style="margin-top: 6em;">
         <h1>Bienvenido al asistente de creacion de reportes</h1>
   
-        <p class='pt-3'>Para iniciar por favor llena los detalles del reporte y su componente</p>
+        <p class='pt-3' style="font-size: 20px;">Para iniciar por favor llena los detalles del reporte y su componente</p>
   
         <form class="create_report" 
               id="create_report_form" 
               method="post" 
               enctype="multipart/form-data" 
-              action="{% url 'machines:create_report' form.instance %}">
+              action="{% url 'reports:create_report' %}">
           {% csrf_token %}
           
-          {{ form.as_p }}
+          {{ form|crispy }}
 
           <button class="mt-5 btn btn-warning" type="submit">Crear reporte &raquo;</button>
         </form>

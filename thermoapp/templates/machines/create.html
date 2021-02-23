@@ -3,6 +3,7 @@
 {% block head_title %}Creacion de maquina{% endblock %}
 
 {% load i18n %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 <div class="container">
@@ -19,7 +20,7 @@
               action="{% url 'machines:create_machine' %}">
           {% csrf_token %}
           
-          {{ form.as_p }}
+          {{ form|crispy }}
 
           <button class="mt-5 btn btn-warning" type="submit">Registrar maquina &raquo;</button>
         </form>

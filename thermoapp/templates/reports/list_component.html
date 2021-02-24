@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Thermoapp: Componentes de maquina{% endblock %}
+
+{% block content %}
+{% load static %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col mt-2 d-flex justify-content-center">
+            <h1>Estos son los componentes de la maquina</h1>
+        </div>
+    </div>
+</div>
+{% for object in object_list %}
+<div class="container mb-5" style="margin-top: 4em;">
+    <div class="row">
+        <div class="col-sm-2 offset-3 d-flex justify-content-center">
+            <img src="{% static 'images/component.png' %}"
+                 class="rounded-circle"
+                 width="160px">
+        </div>
+        <div class="col-sm-2">
+            <div class="row mt-2">
+                <b>Componente: {{ object.component }}</b>
+            </div> 
+            <div class="row mt-2">
+                <b>Detalle: {{ object.detail }}</b>
+            </div>
+            <div class="row mt-2">
+                <b>Accion: {{ object.action }}</b>
+            </div>   
+        </div>
+        <div class="col-sm-2">
+            <div class="row mt-2">
+                <a href="{% url 'reports:add_termography' object.pk %}"
+                   class="mr-4 btn btn-sm btn-warning">
+                    Agregar termografias
+                </a>
+            </div>
+            <div class="row mt-2">
+                <a href=""
+                   class="mr-4 btn btn-sm btn-warning">
+                    Agregar vibraciones
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+{% endfor %}
+{% endblock %}

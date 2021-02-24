@@ -23,11 +23,9 @@ class Component(models.Model):
 
 #Model BasePhoto
 class BasePhoto(models.Model):
-	is_valid = models.BooleanField(default=True)
+	is_valid = models.BooleanField(default=False)
 	is_active = models.BooleanField(default=True)
-	picture = models.ImageField(upload_to='reports/pictures', 
-								blank=True, 
-								null=True)
+	report = models.ForeignKey(Component, on_delete=models.CASCADE, blank=True, null=True)
 
 	class Meta:
 		"""Meta options."""
@@ -35,20 +33,21 @@ class BasePhoto(models.Model):
 
 #Model ThermoPhoto
 class ThermoPhoto(BasePhoto):
-	report = models.ForeignKey(Component, on_delete=models.CASCADE, blank=True, null=True)
-	R1TMax = models.FloatField(blank=True, null=True)
-	R1TMin = models.FloatField(blank=True, null=True)
-	R1TMean = models.FloatField(blank=True, null=True)
-	R2TMax = models.FloatField(blank=True, null=True)
-	R2TMin = models.FloatField(blank=True, null=True)
-	R2TMean = models.FloatField(blank=True, null=True)
+	picture = models.ImageField(upload_to='reports/pictures/thermo_photo/', 
+								blank=True, 
+								null=True)
+	RTMax = models.FloatField(blank=True, null=True)
+	RTMin = models.FloatField(blank=True, null=True)
+	RTMean = models.FloatField(blank=True, null=True)
 
 	def __str__(self):
-		return'{}-{}'.format(self.base.report.id,self.base.id)
+		return'{}-{}'.format(self.report.id,self.base.id)
 
 #Model ContentPhoto
 class ContentPhoto(BasePhoto):
-	report = models.ForeignKey(Component, on_delete=models.CASCADE, blank=True, null=True)
+	picture = models.ImageField(upload_to='reports/pictures/content_photo/', 
+								blank=True, 
+								null=True)
 
 	def __str__(self):
 		return'{}-{}'.format(self.base.report.id,self.base.id)

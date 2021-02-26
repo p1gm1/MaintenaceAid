@@ -14,7 +14,7 @@
               id="create_report_form" 
               method="post" 
               enctype="multipart/form-data" 
-              action="{% url 'reports:add_termography' object.pk %}">
+              action="{% url 'reports:add_termography' instance.pk %}"> 
           {% csrf_token %}
           
           {{ form|crispy }}

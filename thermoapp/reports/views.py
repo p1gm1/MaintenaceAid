@@ -3,9 +3,10 @@ from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, FormView 
 from django.views.generic.list import ListView
+from django.views.generic.detail import BaseDetailView
 
 # Models
-from thermoapp.reports.models import Component
+from thermoapp.reports.models import Component, ContentPhoto, ThermoPhoto
 from thermoapp.machines.models import Machine
 
 # Forms
@@ -26,7 +27,7 @@ class ComponentCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         form.instance.machine.report_number += 1
         form.instance.machine.save()
-        
+
         form.save()
         return super(ComponentCreateView, self).form_valid(form)
 
@@ -55,18 +56,21 @@ class AddTermographyView(LoginRequiredMixin, FormView):
     
     form_class = AddTermographyForm
     template_name = "reports/add_termography.html"
-    pk = None
+    queryset = Component.objects.all()
 
     def dispatch(self, request, *args, **kwargs):
         if request.method == 'GET':
             self.pk = kwargs['pk']
-        if request.method == 'POST':
             kwargs.update({'pk': self.pk})
-        print(kwargs)
         return super().dispatch(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        self.extra_context = {'instance': self.queryset.get(pk=self.kwargs['pk'])} 
+        return super().get_context_data(**kwargs)
+
     def form_valid(self, form):
-        form.save(self.kwargs)
+        pk = self.kwargs['pk']
+        form.save(pk)
         return super().form_valid(form)
 
     def get_success_url(self):

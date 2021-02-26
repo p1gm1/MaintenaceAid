@@ -41,7 +41,7 @@ class ThermoPhoto(BasePhoto):
 	RTMean = models.FloatField(blank=True, null=True)
 
 	def __str__(self):
-		return'{}-{}'.format(self.report.id,self.base.id)
+		return'{}-{}'.format(self.report.id,self.id)
 
 #Model ContentPhoto
 class ContentPhoto(BasePhoto):
@@ -50,4 +50,4 @@ class ContentPhoto(BasePhoto):
 								null=True)
 
 	def __str__(self):
-		return'{}-{}'.format(self.base.report.id,self.base.id)
+		return'{}-{}'.format(self.report.id,self.id)

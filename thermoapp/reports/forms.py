@@ -35,14 +35,14 @@ class AddTermographyForm(forms.Form):
                                     widget=forms.FileInput(attrs={'class': 'form-control',
                                                                   'required': True}))
     
-    def save(self, **kwargs):
+    def save(self, pk):
         """Save method"""
         content_photo = ContentPhoto.objects.create(picture=self.cleaned_data['content_photo'],
                                                     is_valid=True,
-                                                    report=Component.objects.get(pk=kwargs['pk']))
+                                                    report=Component.objects.get(pk=pk))
         content_photo.save()
         thermo_photo = ThermoPhoto.objects.create(picture=self.cleaned_data['thermo_photo'],
-                                                  report=Component.objects.get(pk=kwargs['pk']))
+                                                  report=Component.objects.get(pk=pk))
         thermo_photo.save()
 
         TemperatureAndOcrThread(thermo_photo).start()

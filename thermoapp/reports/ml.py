@@ -8,6 +8,7 @@ import importlib
 from typing import Any
 import collections
 import cv2
+from pathlib import Path
 
 # Data
 import numpy as np
@@ -272,7 +273,7 @@ def calculate_temp_bbox(imgdir):
                                  collate_fn=collate_fn)
         
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-    model = torch.load(os.path.dirname(os.path.abspath(__file__))+'/model.pth',
+    model = torch.load(str(Path(__file__).resolve(strict=True).parent.parent.parent)+'/model.pth',
                            map_location=device)
         
     detection_threshold = 0.5

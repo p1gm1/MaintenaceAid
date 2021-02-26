@@ -17,13 +17,13 @@ from thermoapp.reports.ml import *
 def temp_and_ocr(thermo_photo):
     """Validate content of thermo photo"""
 
-    thermo = settings.MEDIA_ROOT + str(Path(thermo_photo.picture.url[6:]).parent)
+    thermo = settings.MEDIA_ROOT + str(Path(thermo_photo.thermo_picture.url[6:]).parent)
     temp = []
     
     res = calculate_temp_bbox(thermo) 
     
     for i in range(len(res)):
-        probe_img = cv2.imread(settings.MEDIA_ROOT + str(Path(thermo_photo.picture.url[6:])))
+        probe_img = cv2.imread(settings.MEDIA_ROOT + str(Path(thermo_photo.thermo_picture.url[6:])))
         probe_img = probe_img[res[i]['y1']:res[i]['y2'],
                                   res[i]['x1']:res[i]['x2']]
 

@@ -26,28 +26,15 @@ class BasePhoto(models.Model):
 	is_valid = models.BooleanField(default=False)
 	is_active = models.BooleanField(default=True)
 	report = models.ForeignKey(Component, on_delete=models.CASCADE, blank=True, null=True)
-
-	class Meta:
-		"""Meta options."""
-		abstract = True
-
-#Model ThermoPhoto
-class ThermoPhoto(BasePhoto):
-	picture = models.ImageField(upload_to='reports/pictures/thermo_photo/', 
+	thermo_picture = models.ImageField(upload_to='reports/pictures/thermo_photo/', 
+								blank=True, 
+								null=True)
+	content_picture = models.ImageField(upload_to='reports/pictures/content_photo/', 
 								blank=True, 
 								null=True)
 	RTMax = models.FloatField(blank=True, null=True)
 	RTMin = models.FloatField(blank=True, null=True)
 	RTMean = models.FloatField(blank=True, null=True)
-
-	def __str__(self):
-		return'{}-{}'.format(self.report.id,self.id)
-
-#Model ContentPhoto
-class ContentPhoto(BasePhoto):
-	picture = models.ImageField(upload_to='reports/pictures/content_photo/', 
-								blank=True, 
-								null=True)
 
 	def __str__(self):
 		return'{}-{}'.format(self.report.id,self.id)

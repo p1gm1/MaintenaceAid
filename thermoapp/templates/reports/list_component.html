@@ -48,4 +48,11 @@
 </div>
 <hr>
 {% endfor %}
+
+<div class="col-sm-12">
+    <a href="{% url 'reports:create_report' object_list.first.machine.tag_model %}"
+       class="btn btn-primary btn-block mt-5">
+        Generar reporte
+    </a>
+</div>
 {% endblock %}

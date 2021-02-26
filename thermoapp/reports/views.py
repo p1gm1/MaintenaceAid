@@ -3,10 +3,9 @@ from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, FormView 
 from django.views.generic.list import ListView
-from django.views.generic.detail import BaseDetailView
 
 # Models
-from thermoapp.reports.models import Component, ContentPhoto, ThermoPhoto
+from thermoapp.reports.models import Component, BasePhoto
 from thermoapp.machines.models import Machine
 
 # Forms
@@ -34,7 +33,7 @@ class ComponentCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse("machines:list_machines")
 
-create_report_view = ComponentCreateView.as_view()
+create_component_view = ComponentCreateView.as_view()
 
 
 class ComponentListView(LoginRequiredMixin, ListView):
@@ -48,7 +47,7 @@ class ComponentListView(LoginRequiredMixin, ListView):
                                             machine=Machine.objects.get(tag_model=self.kwargs['tag_model']))
         return queryset
 
-list_report_view = ComponentListView.as_view()
+list_component_view = ComponentListView.as_view()
 
 
 class AddTermographyView(LoginRequiredMixin, FormView):
@@ -78,3 +77,24 @@ class AddTermographyView(LoginRequiredMixin, FormView):
         return reverse("reports:list_component", kwargs={'tag_model': tag_model})
 
 add_termography_view = AddTermographyView.as_view()
+
+
+class ReportView(LoginRequiredMixin, ListView):
+    """Make a report of the added, 
+    thermography
+    """
+
+    model = BasePhoto
+    template_name = "reports/create_report.html"
+
+    def get_queryset(self):
+        queryset = []
+        q = Component.objects.filter(user=self.request.user,
+                                     machine=Machine.objects.get(tag_model=self.kwargs['tag_model']))
+        
+        for c in q:
+            queryset.append(BasePhoto.objects.filter(report=c))
+
+        return queryset
+
+report_view = ReportView.as_view()

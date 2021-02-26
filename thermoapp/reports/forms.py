@@ -2,7 +2,7 @@
 from django import forms
 
 # Models
-from thermoapp.reports.models import ContentPhoto, ThermoPhoto, Component
+from thermoapp.reports.models import BasePhoto, Component
 
 # Threads
 import threading
@@ -23,7 +23,6 @@ class TemperatureAndOcrThread(threading.Thread):
         temp_and_ocr(self.thermo_photo)
 
 
-
 class AddTermographyForm(forms.Form):
     """Termography and Content 
     form class"""
@@ -37,13 +36,10 @@ class AddTermographyForm(forms.Form):
     
     def save(self, pk):
         """Save method"""
-        content_photo = ContentPhoto.objects.create(picture=self.cleaned_data['content_photo'],
-                                                    is_valid=True,
-                                                    report=Component.objects.get(pk=pk))
-        content_photo.save()
-        thermo_photo = ThermoPhoto.objects.create(picture=self.cleaned_data['thermo_photo'],
-                                                  report=Component.objects.get(pk=pk))
+        thermo_photo = BasePhoto.objects.create(thermo_picture=self.cleaned_data['thermo_photo'],
+                                                content_picture=self.cleaned_data['content_photo'],
+                                                report=Component.objects.get(pk=pk))
         thermo_photo.save()
+        
 
         TemperatureAndOcrThread(thermo_photo).start()
-

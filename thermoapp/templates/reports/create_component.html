@@ -17,7 +17,7 @@
               id="create_report_form" 
               method="post" 
               enctype="multipart/form-data" 
-              action="{% url 'reports:create_component' %}">
+              action="{% url 'reports:create_component' machine.tag_model %}">
           {% csrf_token %}
           
           {{ form|crispy }}

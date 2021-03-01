@@ -18,12 +18,23 @@ class ComponentCreateView(LoginRequiredMixin, CreateView):
     """
     template_name='reports/create_component.html'
     model=Component
-    fields = ['machine','component', 'detail', 'action', 't_max', 't_min']
+    fields = ['component', 'detail', 'action', 't_max', 't_min']
+    queryset = Machine.objects.all()
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == 'GET':
+            self.tag_model = kwargs['tag_model']
+            kwargs.update({'tag_model': self.tag_model})
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        self.extra_context = {'machine': self.queryset.get(tag_model=self.kwargs['tag_model'])}
+        return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
         
         form.instance.user = self.request.user
+        form.instance.machine = self.get_context_data()['machine']
         form.instance.machine.report_number += 1
         form.instance.machine.save()
 

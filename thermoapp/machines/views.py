@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import  FormView, UpdateView
+from django.views.generic.list import ListView
 
 # Models
 from thermoapp.machines.models import Machine
@@ -10,40 +11,17 @@ from thermoapp.machines.models import Machine
 # Form
 from thermoapp.machines.forms import MachineCreateForm
 
-# Django Rest
-from rest_framework import (status, 
-                            generics)
 
-from rest_framework.response import Response
-from rest_framework.renderers import TemplateHTMLRenderer
-
-# Permissions
-from rest_framework.permissions import AllowAny
-
-
-class MachineListView(generics.ListAPIView):
-                   
-    """Machine view set.
-    
-    Handles machine detail.
+class MachineListView(LoginRequiredMixin, ListView):
+    """Machine list view.
     """
 
-    renderer_classes = [TemplateHTMLRenderer]
+    model = Machine
+    template_name = "machines/detail.html"
 
-    def get_permissions(self):
-        """Assign permissions based on action"""
-
-        permissions = [AllowAny] #IsAuthenticated
-        
-
-        return [p() for p in permissions]
-
-    def get(self, request):
-        machines = Machine.objects.filter(register_by=request.user)
-        self.object = machines
-        
-        return Response(data={'machines': self.object}, status=status.HTTP_200_OK, template_name='machines/detail.html')
-
+    def get_queryset(self):
+        queryset = Machine.objects.filter(register_by=self.request.user)
+        return queryset
 
 machine_detail_view = MachineListView.as_view()
 

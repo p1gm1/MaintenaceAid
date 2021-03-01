@@ -97,6 +97,17 @@ class ReportView(LoginRequiredMixin, ListView):
 
     model = BasePhoto
     template_name = "reports/create_report.html"
+    queryset = Machine.objects.all()
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == 'GET':
+            self.tag_model = kwargs['tag_model']
+            kwargs.update({'tag_model': self.tag_model})
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        self.extra_context = {'machine': self.queryset.get(tag_model=self.kwargs['tag_model'])}
+        return super().get_context_data(**kwargs)
 
     def get_queryset(self):
         queryset = []

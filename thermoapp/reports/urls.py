@@ -7,6 +7,7 @@ from thermoapp.reports.views import (
     list_component_view,
     add_termography_view,
     report_view,
+    update_termophoto_view,
     )
 
 urlpatterns = [
@@ -14,4 +15,5 @@ urlpatterns = [
     path('<tag_model>/list_component/', view=list_component_view, name="list_component"),
     path('<pk>/add_termography/', view=add_termography_view, name="add_termography"),
     path('<tag_model>/report/', view=report_view, name="create_report"),
+    path('<pk>/update_termography/', view=update_termophoto_view, name="update_thermophoto"),
 ]

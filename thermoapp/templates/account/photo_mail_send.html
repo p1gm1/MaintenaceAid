@@ -1,0 +1,15 @@
+<p>Estimado {{ user.username }}</p>
+
+<p>
+    Se ha presentado una falla al analizar una termografia del componente {{ component.component }} de la maquina 
+    {{ component.machine.tag_model }}. Es posible que esta no este bien tomada o no sea claro los registros de temperatura
+    dentro de esta.
+</p>
+<br>
+<p>
+    Porfavor revisa el siguiente <a href="{% url 'reports:update_thermophoto' photo.pk %}">link</a> y verifica tus fotos.
+</p>
+<br>
+<p>
+    Atentamente el equipo de ThermoApp - AiSky
+</p>

@@ -1,7 +1,7 @@
 # Django
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.edit import CreateView, FormView 
+from django.views.generic.edit import CreateView, FormView, UpdateView 
 from django.views.generic.list import ListView
 
 # Models
@@ -9,8 +9,7 @@ from thermoapp.reports.models import Component, BasePhoto
 from thermoapp.machines.models import Machine
 
 # Forms
-from thermoapp.reports.forms import AddTermographyForm
-
+from thermoapp.reports.forms import AddTermographyForm, TemperatureAndOcrThread
 
 class ComponentCreateView(LoginRequiredMixin, CreateView):
     """Machine component create
@@ -120,3 +119,24 @@ class ReportView(LoginRequiredMixin, ListView):
         return queryset
 
 report_view = ReportView.as_view()
+
+
+class UpdateTermographyView(LoginRequiredMixin, UpdateView):
+    """Update a termograph"""
+    template_name='reports/update_termography.html'
+    model = BasePhoto
+    fields = ('thermo_picture', 'content_picture')
+
+    def get_queryset(self):
+        return BasePhoto.objects.all()
+
+    def form_valid(self, form):
+        form.save()
+        TemperatureAndOcrThread(self.object).start()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        tag_model = self.object.report.machine.tag_model
+        return reverse('reports:list_component', kwargs={'tag_model': tag_model})
+
+update_termophoto_view = UpdateTermographyView.as_view()

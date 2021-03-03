@@ -35,6 +35,14 @@ class Component(models.Model):
 							 default=0.0,
 							 null=True,
 							 blank=True)
+	v_max = models.FloatField(_("Vibracion máxima"),
+							  default=0.0,
+							  null=True,
+							  blank=True)
+	v_min = models.FloatField(_("Vibración mínima"),
+							  default=0.0,
+							  null=True,
+							  blank=True)
 
 	def __str__(self):
 		return'{}'.format(self.id)
@@ -56,3 +64,27 @@ class BasePhoto(models.Model):
 
 	def __str__(self):
 		return'{}-{}'.format(self.report.id,self.id)
+
+#Model Vibrations
+class Vibrations(models.Model):
+	report = models.ForeignKey(Component, 
+							   on_delete=models.CASCADE, 
+							   blank=True, 
+							   null=True)
+	created = models.DateField(_("Fecha de registro"),auto_now_add=True)
+	monitoring_point = models.CharField(_("Punto de monitoreo"),
+									   max_length=150, min_length=5, 
+									   blank=True, 
+									   null=True)
+	velocity = models.FloatField(_("Velocidad"), 
+								 null=True, 
+								 false=True)
+	acelaration = models.FloatField(_("Aceleracion"),
+								    null=True, 
+									false=True)
+	demod_spectrum = models.FloatField(_("Dem Odulada"), 
+									   null=True, 
+									   false=True)
+
+	def __str__(self):
+		return'{}-{}'.format(self.report.id, self.id)

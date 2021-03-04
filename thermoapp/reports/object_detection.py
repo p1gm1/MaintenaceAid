@@ -1,6 +1,3 @@
-# utils
-import os
-
 # OCR
 import easyocr
 
@@ -35,7 +32,11 @@ def temp_and_ocr(thermo_photo):
 
         try:
             temp.append(float(bounds[0][1]))
+            thermo_photo.is_active = True 
+            thermo_photo.save()
         except:
+            thermo_photo.is_active = False
+            thermo_photo.save()
             send_fail_email(
                 thermo_photo.report.user.pk, 
                 thermo_photo.report.pk,

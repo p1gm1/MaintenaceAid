@@ -5,11 +5,13 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.views.generic.list import ListView
 
 # Models
-from thermoapp.reports.models import Component, BasePhoto
+from thermoapp.reports.models import Component, BasePhoto, Vibrations
 from thermoapp.machines.models import Machine
 
 # Forms
-from thermoapp.reports.forms import AddTermographyForm, TemperatureAndOcrThread
+from thermoapp.reports.forms import (AddTermographyForm, 
+                                     TemperatureAndOcrThread,
+                                     AddVibrationForm)
 
 class ComponentCreateView(LoginRequiredMixin, CreateView):
     """Machine component create
@@ -17,7 +19,17 @@ class ComponentCreateView(LoginRequiredMixin, CreateView):
     """
     template_name='reports/create_component.html'
     model=Component
-    fields = ['component', 'detail', 'action', 't_max', 't_min']
+    fields = ['component', 
+              'detail', 
+              'action', 
+              't_max', 
+              't_min',
+              'vel_max',
+              'vel_min',
+              'ace_max',
+              'ace_min',
+              'v_max',
+              'v_min']
     queryset = Machine.objects.all()
 
     def dispatch(self, request, *args, **kwargs):
@@ -89,38 +101,6 @@ class AddTermographyView(LoginRequiredMixin, FormView):
 add_termography_view = AddTermographyView.as_view()
 
 
-class ReportView(LoginRequiredMixin, ListView):
-    """Make a report of the added, 
-    thermography
-    """
-
-    model = BasePhoto
-    template_name = "reports/create_report.html"
-    queryset = Machine.objects.all()
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.method == 'GET':
-            self.tag_model = kwargs['tag_model']
-            kwargs.update({'tag_model': self.tag_model})
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        self.extra_context = {'machine': self.queryset.get(tag_model=self.kwargs['tag_model'])}
-        return super().get_context_data(**kwargs)
-
-    def get_queryset(self):
-        queryset = []
-        q = Component.objects.filter(user=self.request.user,
-                                     machine=Machine.objects.get(tag_model=self.kwargs['tag_model']))
-        
-        for c in q:
-            queryset.append(BasePhoto.objects.filter(report=c))
-
-        return queryset
-
-report_view = ReportView.as_view()
-
-
 class UpdateTermographyView(LoginRequiredMixin, UpdateView):
     """Update a termograph"""
     template_name='reports/update_termography.html'
@@ -140,3 +120,70 @@ class UpdateTermographyView(LoginRequiredMixin, UpdateView):
         return reverse('reports:list_component', kwargs={'tag_model': tag_model})
 
 update_termophoto_view = UpdateTermographyView.as_view()
+
+
+class AddVibrationsView(LoginRequiredMixin, FormView):
+    """Add vibrations info"""
+
+    form_class = AddVibrationForm
+    template_name = "reports/add_vibrations.html"
+    queryset = Component.objects.all()
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == 'GET':
+            self.pk = kwargs['pk']
+            kwargs.update({'pk': self.pk})
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        self.extra_context = {'instance': self.queryset.get(pk=self.kwargs['pk'])}
+        return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        pk = self.kwargs['pk']
+        form.save(pk)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        tag_model = Component.objects.get(pk=self.kwargs['pk']).machine.tag_model
+        return reverse("reports:list_component", kwargs={'tag_model': tag_model})
+
+add_vibrations_view = AddVibrationsView.as_view()
+
+
+class ReportView(LoginRequiredMixin, ListView):
+    """Make a report of the added, 
+    thermography
+    """
+
+    model = BasePhoto
+    template_name = "reports/create_report.html"
+    queryset = Machine.objects.all()
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == 'GET':
+            self.tag_model = kwargs['tag_model']
+            kwargs.update({'tag_model': self.tag_model})
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        q = Component.objects.filter(user=self.request.user,
+                                     machine=Machine.objects.get(tag_model=self.kwargs['tag_model']))
+        vibrations = [Vibrations.objects.filter(report=c) for c in q]
+        self.extra_context = {
+            'machine': self.queryset.get(tag_model=self.kwargs['tag_model']),
+            'vibrations': vibrations
+                              }
+        return super().get_context_data(**kwargs)
+
+    def get_queryset(self):
+        q = Component.objects.filter(user=self.request.user,
+                                     machine=Machine.objects.get(tag_model=self.kwargs['tag_model']))
+        
+        queryset = [BasePhoto.objects.filter(report=c) for c in q]
+
+        return queryset
+
+report_view = ReportView.as_view()
+
+

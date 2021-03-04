@@ -2,7 +2,9 @@
 from django import forms
 
 # Models
-from thermoapp.reports.models import BasePhoto, Component
+from thermoapp.reports.models import (BasePhoto, 
+                                      Vibrations, 
+                                      Component)
 
 # Threads
 import threading
@@ -43,3 +45,30 @@ class AddTermographyForm(forms.Form):
         
 
         TemperatureAndOcrThread(thermo_photo).start()
+
+
+class AddVibrationForm(forms.Form):
+    """Vibrations form class"""
+    
+    monitoring_point = forms.CharField(label='Punto de monitoreo',
+                                       widget=forms.TextInput(attrs={'class': 'form-control',
+                                                                     'required': True}))
+    velocity = forms.FloatField(label='Velocidad',
+                                widget=forms.NumberInput(attrs={'class': 'form-control',
+                                                              'required': True}))
+    acelaration = forms.FloatField(label='Aceleración',
+                                  widget=forms.NumberInput(attrs={'class': 'form-control',
+                                                                'required': True}))
+    demod_spectrum = forms.FloatField(label='Dem Odulada',
+                                     widget=forms.NumberInput(attrs={'class': 'form-control',
+                                                                   'required': True}))
+    
+    def save(self, pk):
+        """Save method"""
+        vibrations = Vibrations.objects.create(monitoring_point=self.cleaned_data['monitoring_point'],
+                                               velocity=self.cleaned_data['velocity'],
+                                               acelaration=self.cleaned_data['acelaration'],
+                                               demod_spectrum=self.cleaned_data['demod_spectrum'], 
+                                               report=Component.objects.get(pk=pk))
+        vibrations.save()
+

@@ -43,6 +43,22 @@ class Component(models.Model):
 							  default=0.0,
 							  null=True,
 							  blank=True)
+	vel_max = models.FloatField(_("Velocidad máxima"),
+							  default=0.0,
+							  null=True,
+							  blank=True)
+	vel_min = models.FloatField(_("Velocidad mínima"),
+							  default=0.0,
+							  null=True,
+							  blank=True)
+	ace_max = models.FloatField(_("Aceleración máxima"),
+							  default=0.0,
+							  null=True,
+							  blank=True)
+	ace_min = models.FloatField(_("Aceleración mínima"),
+							  default=0.0,
+							  null=True,
+							  blank=True)
 
 	def __str__(self):
 		return'{}'.format(self.id)
@@ -52,10 +68,12 @@ class BasePhoto(models.Model):
 	is_valid = models.BooleanField(default=False)
 	is_active = models.BooleanField(default=True)
 	report = models.ForeignKey(Component, on_delete=models.CASCADE, blank=True, null=True)
-	thermo_picture = models.ImageField(upload_to='reports/pictures/thermo_photo', 
+	thermo_picture = models.ImageField(_("Foto Termica"),
+									   upload_to='reports/pictures/thermo_photo', 
 									   blank=True, 
 									   null=True)
-	content_picture = models.ImageField(upload_to='reports/pictures/content_photo/', 
+	content_picture = models.ImageField(_("Foto de contenido"),
+										upload_to='reports/pictures/content_photo/', 
 										blank=True, 
 										null=True)
 	RTMax = models.FloatField(blank=True, null=True)
@@ -73,18 +91,18 @@ class Vibrations(models.Model):
 							   null=True)
 	created = models.DateField(_("Fecha de registro"),auto_now_add=True)
 	monitoring_point = models.CharField(_("Punto de monitoreo"),
-									   max_length=150, min_length=5, 
+									   max_length=150,  
 									   blank=True, 
 									   null=True)
 	velocity = models.FloatField(_("Velocidad"), 
 								 null=True, 
-								 false=True)
+								 blank=True)
 	acelaration = models.FloatField(_("Aceleracion"),
 								    null=True, 
-									false=True)
+									blank=True)
 	demod_spectrum = models.FloatField(_("Dem Odulada"), 
 									   null=True, 
-									   false=True)
+									   blank=True)
 
 	def __str__(self):
 		return'{}-{}'.format(self.report.id, self.id)

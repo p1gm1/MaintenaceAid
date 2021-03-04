@@ -8,7 +8,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <div class="container" style="margin-top: 6em;">
+    <div class="container" style="margin-top: 3em;">
         <div class="row">
             <div class="col mt-2 d-flex justify-content-center">
                 <h2>Actualiza las fotos que desees de tu componente.</h2>
@@ -16,13 +16,28 @@
         </div>
     </div>
     
-    <div class="container">
-        <div class="row justify-content-md-center">
+    <div class="container" style="margin-top: 2em;">
+        <div class="row justify-content-md-start">
+            <div class="col-sm-12 offset-1">
+                <p>Una de las fotos, tiene inconsistencias en su contenido. Por favor revisa la foto.</p>
+                <br>
+            </div>
+            <div class="col-sm-6 offset-1">
+                <img src="{{ object.thermo_picture.url }}"
+                     width="385px">
+            </div>
+            <div class="col-sm-5">
+                <img src="{{ object.content_picture.url }}"
+                     width="385px">
+            </div>    
+        </div>
+        <div class="row justify-content-md-center">   
             <div class="col-6 pt-5" id="machine-box">
                 <form action="{% url 'reports:update_thermophoto' object.pk %}" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form|crispy }}
                     <button class="btn btn-warning btn-block mt-5"type="submit">Actualizar</button>
+                    <br>
                 </form>
             </div>
         </div>

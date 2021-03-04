@@ -1,28 +1,25 @@
 {% extends "base.html" %}
 
-{% block head_title %}Creacion de componente{% endblock %}
+{% block title %}Thermoapp: Vibraciones{% endblock %}
 
-{% load i18n %}
 {% load crispy_forms_tags %}
 
 {% block content %}
 <div class="container">
     <div class="row">
       <div class="col-10 offset-1" style="margin-top: 6em;">
-        <h1>Bienvenido al asistente de creacion de componentes</h1>
-  
-        <p class='pt-3' style="font-size: 20px;">Para iniciar por favor llena los detalles del componente</p>
+        <h1>Por favor carque las vibraciones al componente</h1>
   
         <form class="create_report" 
               id="create_report_form" 
               method="post" 
               enctype="multipart/form-data" 
-              action="{% url 'reports:create_component' machine.tag_model %}">
+              action="{% url 'reports:add_vibration' instance.pk %}"> 
           {% csrf_token %}
           
           {{ form|crispy }}
 
-          <button class="mt-5 btn btn-warning" type="submit">Crear componente &raquo;</button>
+          <button class="mt-5 btn btn-warning" type="submit">Agregar vibraciones &raquo;</button>
         </form>
       </div>
     </div>

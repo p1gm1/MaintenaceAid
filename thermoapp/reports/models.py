@@ -21,11 +21,17 @@ class Component(models.Model):
 	created = models.DateField(_("Fecha de registro"),auto_now_add=True)
 	component = models.CharField(_("Componente"),max_length=255)
 	detail = models.CharField(_("Detalle"),
-							  max_length=255)
+							  max_length=255,
+							  blank=True, 
+							  null=True)
 	action = models.CharField(_("Accion"),
 							  max_length=255, 
 							  blank=True, 
 							  null=True)
+	tag_model = models.CharField(_("Tag"),
+								 max_length=55,
+								 blank=True, 
+							     null=True)
 	is_active = models.BooleanField(default=True)
 	t_max = models.FloatField(_("Temperatura máxima"),
 							  default=0.0,
@@ -59,17 +65,9 @@ class Component(models.Model):
 							  default=0.0,
 							  null=True,
 							  blank=True)
-	dem_max = models.FloatField(_("Demod máxima"),
-								default=0.0,
-								null=True,
-								blank=True)
-	dem_min = models.FloatField(_("Demod mínima"),
-								default=0.0,
-								null=True,
-								blank=True)
 
 	def __str__(self):
-		return'{}'.format(self.id)
+		return'{}'.format(self.tag_model)
 
 #Model BasePhoto
 class BasePhoto(models.Model):
@@ -89,7 +87,7 @@ class BasePhoto(models.Model):
 	RTMean = models.FloatField(blank=True, null=True)
 
 	def __str__(self):
-		return'{}-{}'.format(self.report.id,self.id)
+		return'{}-{}'.format(self.report.tag_model,self.id)
 
 #Model Vibrations
 class Vibrations(models.Model):
@@ -113,4 +111,4 @@ class Vibrations(models.Model):
 									   blank=True)
 
 	def __str__(self):
-		return'{}-{}'.format(self.report.id, self.id)
+		return'{}-{}'.format(self.report.tag_model, self.id)

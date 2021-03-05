@@ -7,7 +7,7 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col mt-2 d-flex justify-content-center">
-            <h1>Estos son los componentes de la maquina</h1>
+            <h1>Estos son los componentes de la maquina {{ object_list.first.machine.tag_model }}</h1>
         </div>
     </div>
 </div>
@@ -28,6 +28,9 @@
             </div>
             <div class="row mt-2">
                 <b>Accion: {{ object.action }}</b>
+            </div>
+            <div class="row mt-2">
+                <b>Tag: {{ object.tag_model }}</b>
             </div>   
         </div>
         <div class="col-sm-2">
@@ -49,9 +52,9 @@
 <hr>
 {% endfor %}
 
-<div class="col-sm-12">
+<div class="col-sm-10 offset-1">
     <a href="{% url 'reports:create_report' object_list.first.machine.tag_model %}"
-       class="btn btn-primary btn-block mt-5">
+       class="btn btn-warning btn-block mt-5">
         Generar reporte
     </a>
 </div>

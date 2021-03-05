@@ -24,7 +24,8 @@ class ComponentCreateView(LoginRequiredMixin, CreateView):
     model=Component
     fields = ['component', 
               'detail', 
-              'action', 
+              'action',
+              'tag_model', 
               't_max', 
               't_min',
               'vel_max',

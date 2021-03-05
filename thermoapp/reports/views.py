@@ -13,6 +13,9 @@ from thermoapp.reports.forms import (AddTermographyForm,
                                      TemperatureAndOcrThread,
                                      AddVibrationForm)
 
+# utils
+from thermoapp.reports.utils import VibrationsPoints
+
 class ComponentCreateView(LoginRequiredMixin, CreateView):
     """Machine component create
     view.
@@ -169,10 +172,37 @@ class ReportView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         q = Component.objects.filter(user=self.request.user,
                                      machine=Machine.objects.get(tag_model=self.kwargs['tag_model']))
+        
+        mp = ''
+        vib_list=[]
+
         vibrations = [Vibrations.objects.filter(report=c) for c in q]
+        
+        for q in vibrations:
+            for j in range(len(q)):
+                arr_m = Vibrations.objects.filter(monitoring_point=q[j].monitoring_point)
+                if mp != arr_m.first().monitoring_point:
+                    mp = arr_m.first().monitoring_point
+                    vib_obj = VibrationsPoints(
+                        component=arr_m.first().report.component,
+                        monitoring_point=arr_m.first().monitoring_point,
+                        created=arr_m.last().created,
+                        vel_prev=arr_m.first().velocity,
+                        vel_last=arr_m.last().velocity,
+                        ace_prev=arr_m.first().acelaration,
+                        ace_last=arr_m.last().acelaration,
+                        dem_prev=arr_m.first().demod_spectrum,
+                        dem_last=arr_m.last().demod_spectrum
+                        )
+                    vib_list.append(vib_obj)
+                    
+                else:
+                    continue
         self.extra_context = {
             'machine': self.queryset.get(tag_model=self.kwargs['tag_model']),
-            'vibrations': vibrations
+            'vibrations': vib_list,
+            'components': Component.objects.filter(user=self.request.user,
+                                     machine=Machine.objects.get(tag_model=self.kwargs['tag_model'])),
                               }
         return super().get_context_data(**kwargs)
 

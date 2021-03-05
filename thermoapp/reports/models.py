@@ -59,6 +59,14 @@ class Component(models.Model):
 							  default=0.0,
 							  null=True,
 							  blank=True)
+	dem_max = models.FloatField(_("Demod máxima"),
+								default=0.0,
+								null=True,
+								blank=True)
+	dem_min = models.FloatField(_("Demod mínima"),
+								default=0.0,
+								null=True,
+								blank=True)
 
 	def __str__(self):
 		return'{}'.format(self.id)

@@ -148,19 +148,19 @@
                                 <th>{{ vibration.created }}</th>
                                 <th>{{ vibration.vel_prev }}</th>
                                 {% if vibration.vel_last > component.vel_max %}
-                                <th style="background-color: #ffc600;">{{ vibration.vel_last }}</th>
+                                <th style="background-color: red">{{ vibration.vel_last }}</th>
                                 {% else %}
                                 <th>{{ vibration.vel_last }}</th>
                                 {% endif %}
                                 <th>{{ vibration.ace_prev }}</th>
                                 {% if vibration.ace_last > component.ace_max %}
-                                <th style="background-color: #ffc600;">{{ vibration.ace_last }}</th>
+                                <th style="background-color: red;">{{ vibration.ace_last }}</th>
                                 {% else %}
                                 <th>{{ vibration.ace_last }}</th>
                                 {% endif %}
                                 <th>{{ vibration.dem_prev }}</th>
                                 {% if vibration.dem_last > component.dem_max %}
-                                <th style="background-color: #ffc600;">{{ vibration.dem_last }}</th>
+                                <th style="background-color: red;">{{ vibration.dem_last }}</th>
                                 {% else %}
                                 <th>{{ vibration.dem_last }}</th>
                                 {% endif %}
@@ -169,6 +169,31 @@
                         {% endfor %}
                     </table>
                 </div>           
+            </div>
+            <div class="row pt-4">
+                <div class="col-sm-12">
+                    {{ vibrations.flag }}
+                    {% for vibration in vibrations %}
+                        {% if vibration.flag %}
+                        <p>En el punto de monitoreo: <strong>{{ vibration.monitoring_point }}</strong> se ha encontrado una serie de valores atipicos:</p>
+                            {% for outlier in vibration.outliers %}
+                            <ul>
+                                {% if outlier.velocity %}
+                                    <li>Una desviación de  <strong>{{ outlier.velocity }}</strong> de velocidad.</li>
+                                {% endif %}
+                                {% if outlier.acelaration %}
+                                    <li>Una desviación de  <strong>{{ outlier.acelaration }}</strong> de aceleración.</li>
+                                {% endif %}
+                                {% if outlier.demod %}
+                                    <li>Una desviación de  <strong>{{ outlier.demod }}</strong> de vibración.</li>
+                                {% endif %}
+                            </ul>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                    <p>Se resaltan en el sumario de vibraciones los valores atipicos encontrados, como condición de <strong style="color: red;">alarma</strong> 
+                        en caso de no señalarse se entiende que el equipo se encuentra en operación <strong style="color: green;">normal</strong>.</p>
+                </div>
             </div>    
         </div>
     {% endfor %}

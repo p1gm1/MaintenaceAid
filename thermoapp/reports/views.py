@@ -182,23 +182,40 @@ class ReportView(LoginRequiredMixin, ListView):
         for q in vibrations:
             for j in range(len(q)):
                 arr_m = Vibrations.objects.filter(monitoring_point=q[j].monitoring_point)
+                
                 if mp != arr_m.first().monitoring_point:
                     mp = arr_m.first().monitoring_point
-                    vib_obj = VibrationsPoints(
-                        component=arr_m.first().report.component,
-                        monitoring_point=arr_m.first().monitoring_point,
-                        created=arr_m.last().created,
-                        vel_prev=arr_m.first().velocity,
-                        vel_last=arr_m.last().velocity,
-                        ace_prev=arr_m.first().acelaration,
-                        ace_last=arr_m.last().acelaration,
-                        dem_prev=arr_m.first().demod_spectrum,
-                        dem_last=arr_m.last().demod_spectrum
-                        )
+                    if (len(arr_m) > 2):
+                        vib_obj = VibrationsPoints(
+                            component=arr_m.first().report.component,
+                            monitoring_point=mp,
+                            created=arr_m.last().created,
+                            vel_prev= arr_m.reverse()[len(arr_m)-2].velocity,
+                            vel_last=arr_m.last().velocity,
+                            ace_prev=arr_m.reverse()[len(arr_m)-2].acelaration,
+                            ace_last=arr_m.last().acelaration,
+                            dem_prev=arr_m.reverse()[len(arr_m)-2].demod_spectrum,
+                            dem_last=arr_m.last().demod_spectrum
+                            )
+                        vib_obj.find_outliers()
+                    else:
+                        vib_obj = VibrationsPoints(
+                            component=arr_m.first().report.component,
+                            monitoring_point=mp,
+                            created=arr_m.last().created,
+                            vel_prev= arr_m.first().velocity,
+                            vel_last=arr_m.last().velocity,
+                            ace_prev=arr_m.first().acelaration,
+                            ace_last=arr_m.last().acelaration,
+                            dem_prev=arr_m.first().demod_spectrum,
+                            dem_last=arr_m.last().demod_spectrum
+                            )
+                        vib_obj.find_outliers()
                     vib_list.append(vib_obj)
                     
                 else:
                     continue
+        
         self.extra_context = {
             'machine': self.queryset.get(tag_model=self.kwargs['tag_model']),
             'vibrations': vib_list,

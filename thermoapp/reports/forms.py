@@ -17,12 +17,16 @@ class TemperatureAndOcrThread(threading.Thread):
     thermograp and adds to 
     report summary.
     """
-    def __init__(self, thermo_photo, *args, **kwargs):
+    def __init__(self, thermo_photo, lock, *args, **kwargs):
         self.thermo_photo = thermo_photo
+        self.lock = lock
         super(TemperatureAndOcrThread, self).__init__(*args, **kwargs)
 
     def run(self):
+        
+        self.lock.acquire(True)
         temp_and_ocr(self.thermo_photo)
+        self.lock.release()
 
 
 class AddTermographyForm(forms.Form):
@@ -43,8 +47,8 @@ class AddTermographyForm(forms.Form):
                                                 report=Component.objects.get(pk=pk))
         thermo_photo.save()
         
-
-        TemperatureAndOcrThread(thermo_photo).start()
+        lock = threading.Lock()
+        TemperatureAndOcrThread(thermo_photo, lock).start()
 
 
 class AddVibrationForm(forms.Form):

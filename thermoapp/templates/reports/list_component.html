@@ -46,6 +46,12 @@
                     Agregar vibraciones
                 </a>
             </div>
+            <div class="row mt-2">
+                <a href="{% url 'reports:update_component' object.pk %}"
+                   class="mr-4 btn btn-sm btn-primary">
+                    Actualizar componente
+                </a>
+            </div>
         </div>
     </div>
 </div>
@@ -58,4 +64,7 @@
         Generar reporte
     </a>
 </div>
+
+{% include "pagination.html" %}
+
 {% endblock %}

@@ -17,7 +17,7 @@
           
           {{ form|crispy }}
 
-          <button class="mt-5 mr-3 btn btn-warning" type="submit">Agregar vibraciones &raquo;</button><a href="{% url url 'reports:add_vibration' instance.pk %}" class="mt-5 btn btn btn-primary">Agregar Excel &raquo;</a>
+          <button class="mt-5 mr-3 btn btn-warning" type="submit">Agregar vibraciones &raquo;</button><a href="{% url 'reports:add_vibration' instance.pk %}" class="mt-5 btn btn btn-primary">Agregar valor &raquo;</a>
         </form>
       </div>
     </div>

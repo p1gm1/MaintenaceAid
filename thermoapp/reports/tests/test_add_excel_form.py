@@ -7,9 +7,6 @@ from django.conf import settings
 
 from openpyxl import load_workbook
 
-# Forms
-from thermoapp.reports.forms import AddVibrationsExcelForm
-
 pytestmark = pytest.mark.django_db
 
 class TestVibrationsExcelForm:

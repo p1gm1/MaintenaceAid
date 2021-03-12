@@ -78,6 +78,22 @@ class ComponentListView(LoginRequiredMixin, ListView):
 list_component_view = ComponentListView.as_view()
 
 
+class ComponentUpdateView(LoginRequiredMixin, UpdateView):
+    """Update component view."""
+    template_name='reports/update_component.html'
+    model=Component
+    fields=('component', 'detail', 'action', 'tag_model')
+
+    def get_queryset(self):
+        return Component.objects.all()
+
+    def get_success_url(self):
+        tag_model=self.get_queryset().get(pk=self.kwargs['pk']).machine.tag_model
+        return reverse("reports:list_component", kwargs={'tag_model': tag_model})
+
+update_component_view = ComponentUpdateView.as_view()
+
+
 class AddTermographyView(LoginRequiredMixin, FormView):
     """Add termography and content photo."""
     

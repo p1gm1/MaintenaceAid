@@ -24,6 +24,10 @@ html, body {
     color: #1d5e72;;
 }
 
+.card-img-top{
+    max-width: 65%;
+}
+
 #profile-box {
     background: #fff;
     border: 1px solid rgba(0,0,0,.0975);
@@ -67,6 +71,10 @@ html, body {
 
 #reference img{
     max-width: 100%;
+}
+
+#benefits{
+    background-color: whitesmoke;
 }
 
 #auth-container {

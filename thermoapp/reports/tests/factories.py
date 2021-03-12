@@ -2,7 +2,7 @@
 from faker import Faker
 from factory.django import DjangoModelFactory
 
-# Django
+# Models
 from thermoapp.reports.models import BasePhoto
 
 class PhotoFactory(DjangoModelFactory):
@@ -14,3 +14,4 @@ class PhotoFactory(DjangoModelFactory):
 
     class Meta:
         model=BasePhoto
+

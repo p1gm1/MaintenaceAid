@@ -1,4 +1,5 @@
 # Django
+from django.forms.forms import Form
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, FormView, UpdateView 
@@ -11,7 +12,8 @@ from thermoapp.machines.models import Machine
 # Forms
 from thermoapp.reports.forms import (AddTermographyForm, 
                                      TemperatureAndOcrThread,
-                                     AddVibrationForm)
+                                     AddVibrationForm,
+                                     AddVibrationsExcelForm)
 
 # utils
 from thermoapp.reports.utils import VibrationsPoints
@@ -153,6 +155,35 @@ class AddVibrationsView(LoginRequiredMixin, FormView):
         return reverse("reports:list_component", kwargs={'tag_model': tag_model})
 
 add_vibrations_view = AddVibrationsView.as_view()
+
+
+class AddVibrationsExcelView(LoginRequiredMixin, FormView):
+    """Add vribrations excel"""
+
+    form_class=AddVibrationsExcelForm
+    template_name="reports/add_vibrations_excel.html"
+    queryset = Component.objects.all()
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == 'GET':
+            self.pk = kwargs['pk']
+            kwargs.update({'pk': self.pk})
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        self.extra_context = {'instance': self.queryset.get(pk=self.kwargs['pk'])}
+        return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        pk = self.kwargs['pk']
+        form.save(pk)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        tag_model = Component.objects.get(pk=self.kwargs['pk']).machine.tag_model
+        return reverse("reports:list_component", kwargs={'tag_model': tag_model})
+
+add_vibrations_excel_view = AddVibrationsExcelView.as_view()
 
 
 class ReportView(LoginRequiredMixin, ListView):

@@ -22,34 +22,20 @@ django-redis==4.12.1  # https://github.com/jazzband/django-redis
 djangorestframework==3.12.2  # https://github.com/encode/django-rest-framework
 django-cors-headers==3.5.0 # https://github.com/adamchainz/django-cors-headers
 django-debug-toolbar
+openpyxl
 #debug_toolbar
 
-# Machine leraning
+# Machine learning
 #------------------------------------------------------------------------------
-#numpy
-#pandas
-#matplotlib
-#omegaconf
-#albumentations
-#torch
-#torch lite version without gpu processing
-#https://download.pytorch.org/whl/cpu/torch-1.7.0%2Bcpu-cp36-cp36m-linux_x86_64.whl
-#torchvision
-#pytorch-lightning
-#opencv-python
-#easyocr
-#albumentations
+numpy
+pandas
+matplotlib
+omegaconf
+albumentations
+torch
+torchvision
+pytorch-lightning
+opencv-python
+easyocr
+albumentations
 
-#celery
-# Complement
-#------------------------------------------------------------------------------
-#django_celery_beat
-#django-core-headers
-#django-environ
-#django-extensions
-#djangorestframework
-#--user django-crispy-forms
-
-# AWS
-#------------------------------------------------------------------------------
-boto3

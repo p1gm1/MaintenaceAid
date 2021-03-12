@@ -12,6 +12,9 @@ import threading
 # Object detection and ocr
 from thermoapp.reports.object_detection import temp_and_ocr
 
+# utils
+from thermoapp.reports.utils import excel_to_dict
+
 class TemperatureAndOcrThread(threading.Thread):
     """New thread that reads
     thermograp and adds to 
@@ -49,6 +52,25 @@ class AddTermographyForm(forms.Form):
         
         lock = threading.Lock()
         TemperatureAndOcrThread(thermo_photo, lock).start()
+
+
+class AddVibrationsExcelForm(forms.Form):
+    """Vibrations Excel form class."""
+    excel_file = forms.FileField(label='Archivo de Excel',
+                                 widget=forms.FileInput(attrs={'class': 'form-control',
+                                                               'required': True}))
+    def save(self, pk):
+        """Save method"""
+        report = Component.objects.get(pk=pk)
+        excel_dict = excel_to_dict(self.cleaned_data['excel_file'])
+
+        for d in excel_dict:
+            vibrations = Vibrations.objects.create(monitoring_point=d['monitoring_point'],
+                                                   velocity=d['velocity'],
+                                                   acelaration=d['aceleration'],
+                                                   demod_spectrum=d['dem_odulada'],
+                                                   report=report)
+            vibrations.save()
 
 
 class AddVibrationForm(forms.Form):

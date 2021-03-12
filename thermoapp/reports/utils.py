@@ -1,6 +1,40 @@
 # Models
 from thermoapp.reports.models import Component
 
+# Pyxl
+from openpyxl import load_workbook
+
+def excel_to_dict(path_to_file):
+    """Handles data to excel
+    from database.
+    """
+    excel_file=load_workbook(path_to_file)
+    worksheet=excel_file['Sheet1']
+
+    mp_arr = []
+    i=0
+
+    for row in worksheet.iter_rows():
+        if i != 0:
+            for i in range(len(row)):
+                if i == 0:
+                    monitoring_point=row[i].value
+                elif i == 1:
+                    velocity=row[i].value
+                elif i == 2:
+                    aceleration=row[i].value
+                elif i == 3:
+                    dem_odulada=row[i].value
+                
+            mp_arr.append({"monitoring_point": monitoring_point,
+                               "velocity": velocity,
+                               "aceleration": aceleration,
+                               "dem_odulada": dem_odulada})
+        else:
+            i += 1
+    
+    return mp_arr
+
 class VibrationsPoints():
     def __init__(self, component, monitoring_point, created, vel_prev, vel_last, ace_prev, ace_last, dem_prev, dem_last):
         self.component = component

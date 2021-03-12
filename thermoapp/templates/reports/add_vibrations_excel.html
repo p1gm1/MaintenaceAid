@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 
-{% block title %}Thermoapp: Vibraciones{% endblock %}
-
 {% load crispy_forms_tags %}
 
 {% block content %}
@@ -14,12 +12,12 @@
               id="create_report_form" 
               method="post" 
               enctype="multipart/form-data" 
-              action="{% url 'reports:add_vibration' instance.pk %}"> 
+              action="{% url 'reports:add_excel_vibration' instance.pk %}"> 
           {% csrf_token %}
           
           {{ form|crispy }}
 
-          <button class="mt-5 mr-3 btn btn-warning" type="submit">Agregar vibraciones &raquo;</button><a href="{% url 'reports:add_excel_vibration' instance.pk %}" class="mt-5 btn btn btn-primary">Agregar Excel &raquo;</a> 
+          <button class="mt-5 mr-3 btn btn-warning" type="submit">Agregar vibraciones &raquo;</button> 
         </form>
       </div>
     </div>

@@ -6,7 +6,7 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.views.generic.list import ListView
 
 # Models
-from thermoapp.reports.models import Component, BasePhoto, Vibrations
+from thermoapp.reports.models import Component, BasePhoto, Vibrations, Report
 from thermoapp.machines.models import Machine
 
 # Forms
@@ -207,7 +207,7 @@ class ReportView(LoginRequiredMixin, ListView):
     thermography
     """
 
-    model = BasePhoto
+    model = Report
     template_name = "reports/create_report.html"
     queryset = Machine.objects.all()
 

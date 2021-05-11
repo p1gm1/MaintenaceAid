@@ -1,122 +1,125 @@
-thermoapp
+# MaintenaceAid
 =========
 
-Thermography web app assistant
+Thermography and vibrations web app assistant
 
-.. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
-     :target: https://github.com/pydanny/cookiecutter-django/
-     :alt: Built with Cookiecutter Django
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-     :target: https://github.com/ambv/black
-     :alt: Black code style
+[![Build Status](https://travis-ci.org/OpenDroneMap/WebODM.svg?branch=master)](https://travis-ci.org/OpenDroneMap/WebODM) 
 
+A user-friendly, software for thermograph image and vibtrations chart processing, Generate status report of machinery in seconds not hours.
 
-:License: MIT
+![image](https://ibb.co/dkhCtgp)
 
+* [Getting Started](#getting-started)
+* [Where Are My Files Stored?](#where-are-my-files-stored)
+* [Setting Up Your Users](#setting-up-your-users)
+* [Backup and restore](#backup-and-restore)
+* [Recommended Machine Specs](#recommended-machine-specs)
 
-Settings
---------
+![image](https://ibb.co/ZGskc7d)
 
-Moved to settings_.
+![image](https://ibb.co/p1bPdLy)
 
-.. _settings: http://cookiecutter-django.readthedocs.io/en/latest/settings.html
-
-Basic Commands
+## Getting Started
 --------------
 
-Setting Up Your Users
-^^^^^^^^^^^^^^^^^^^^^
+To install MaintenanceAid, follow these steps to get you up and running:
+
+* Install the following applications (if they are not installed already):
+  - [Git](https://git-scm.com/downloads)
+  - [Docker](https://www.docker.com/)
+  - [Docker-compose](https://docs.docker.com/compose/install/)
+  - Python
+  - Pip
+
+* Windows users should install [Docker Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-windows) and:
+  1. Make sure Linux containers are enabled (Switch to Linux Containers...)
+  1. Give Docker enough CPUs (default 2) and RAM (>4Gb, 16Gb better but leave some for Windows) by going to Settings -- Advanced
+  1. Select where on your hard drive you want virtual hard drives to reside (Settings -- Advanced -- Images & Volumes)
+
+* From the Docker Quickstar Terminal or Git Bash (Windows), or from the command line (Mac / Linux), type:
+```bash
+git clone https://github.com/p1gm1/MaintenanceAid.git
+cd MaintenaceAid
+sudo docker-compose -f local.yml build
+sudo docker-compose -f local.yml up
+```
+
+* If you don't wanna use the sudo command, make sure your user is part of the docker group:
+```bash
+sudo usermod -aG docker $USER
+exit
+(restart shell by logging out and then back-in)
+docker-compose -f local.yml build
+docker-compose -f local.yml up
+```
+* Open a web browser to `http://localhost:8000` (unless you are on Windows using Docker Toolbox, see below)
+
+Docker Toolbox users need to find the IP of their docker machine by running this command from the Docker Quickstart Terminal:
+```bash
+docker-machine ip
+192.168.1.100 (your output will be different)
+```
+
+The address to connect to would then be: `http://192.168.1.100:8000`.
+
+To stop MaintenaceAid press CTRL+C or run:
+
+```bash
+sudo docker-compose -f local.yml down
+```
+We recommend that you read the [Docker Documentation](https://docs.docker.com/) to familiarize with the application lifecycle, setup and teardown, or for more advanced uses.
+
+## Where Are My Files Stored?
+--------------
+
+When using Docker, all processing results are stored in a docker volume and are not available on the host filesystem.
+
+## Setting Up Your Users
+--------------
 
 * To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
 
 For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
 
-Type checks
-^^^^^^^^^^^
+* To create a **super user**, type in a console the following:
+```bash
+sudo docker-compose -f local.yml run --rm django python3 manage.py createsuperuser
+```
 
-Running type checks with mypy:
+## Backup and Restore
+--------------
 
-::
+If you want to move MaintenanceAid to another ssytem, you just need to trnasfer the docker volumes.
 
-  $ mypy thermoapp
+On the old system:
+```bash
+mkdir -v backup
+sudo docker run --rm --volume maintenaceaid_dbdata:/temp --volume `pwd`/backup:/backup ubuntu tar cvf /backup/dbdata.tar /temp
+docker run --rm --volume maintenaceaid_appmedia:/temp --volume `pwd`/backup:/backup ubuntu tar cvf /backup/appmedia.tar /temp
+```
 
-Test coverage
-^^^^^^^^^^^^^
+Your backup files will be stored in the newly created `backup` directory. Transfer the `backup` directory to the new system, then on the new system:
+```bash
+ls backup # --> appmedia.tar  dbdata.tar
+sudo docker-compose -f local.yml down # Make sure maintenaceaid is down
+docker run --rm --volume maintenaceaid_dbdata:/temp --volume `pwd`/backup:/backup ubuntu bash -c "rm -fr /temp/* && tar xvf /backup/dbdata.tar"
+docker run --rm --volume maintenaceaid_appmedia:/temp --volume `pwd`/backup:/backup ubuntu bash -c "rm -fr /temp/* && tar xvf /backup/appmedia.tar"
+sudo docker-compose -f local.yml up
+```
 
-To run the tests, check your test coverage, and generate an HTML coverage report::
+## Recommended Machine Specs
+--------------
+To run MaintenaceAid, including the deep learning model, we recommend at a minimum:
 
-    $ coverage run -m pytest
-    $ coverage html
-    $ open htmlcov/index.html
+* 100GB free disk space
+* 16GB RAM
+* GPU cuda compatible
 
-Running tests with py.test
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+However if you don't have a GPU it will still work, it just will be slow.
 
-::
+MaintenaceAid runs best on Linux, but works well on Windows and Mac too. if you are technically inclined, you can get to run natively on all three plataforms and there's a [native installer for Ubuntu 16.04](https://www.opendronemap.org/webodm/server-installer/) also available.
 
-  $ pytest
-
-Live reloading and Sass CSS compilation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Moved to `Live reloading and SASS compilation`_.
-
-.. _`Live reloading and SASS compilation`: http://cookiecutter-django.readthedocs.io/en/latest/live-reloading-and-sass-compilation.html
-
-
-
-Celery
-^^^^^^
-
-This app comes with Celery.
-
-To run a celery worker:
-
-.. code-block:: bash
-
-    cd thermoapp
-    celery -A config.celery_app worker -l info
-
-Please note: For Celery's import magic to work, it is important *where* the celery commands are run. If you are in the same folder with *manage.py*, you should be right.
-
-
-
-
-Email Server
-^^^^^^^^^^^^
-
-In development, it is often nice to be able to see emails that are being sent from your application. For that reason local SMTP server `MailHog`_ with a web interface is available as docker container.
-
-Container mailhog will start automatically when you will run all docker containers.
-Please check `cookiecutter-django Docker documentation`_ for more details how to start all containers.
-
-With MailHog running, to view messages that are sent by your application, open your browser and go to ``http://127.0.0.1:8025``
-
-.. _mailhog: https://github.com/mailhog/MailHog
-
-
-
-Deployment
-----------
-
-The following details how to deploy this application.
-
-
-Heroku
-^^^^^^
-
-See detailed `cookiecutter-django Heroku documentation`_.
-
-.. _`cookiecutter-django Heroku documentation`: http://cookiecutter-django.readthedocs.io/en/latest/deployment-on-heroku.html
-
-
-
-Docker
-^^^^^^
-
-See detailed `cookiecutter-django Docker documentation`_.
-
-.. _`cookiecutter-django Docker documentation`: http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html
-
-
+## License
+--------------
+MaintenaceAid is licensed under MIT License.
 

@@ -16,20 +16,20 @@ def excel_to_dict(path_to_file):
 
     for row in worksheet.iter_rows():
         if i != 0:
-            for i in range(len(row)):
-                if i == 0:
-                    monitoring_point=row[i].value
-                elif i == 1:
-                    velocity=row[i].value
-                elif i == 2:
-                    aceleration=row[i].value
-                elif i == 3:
-                    dem_odulada=row[i].value
+            for j in range(len(row)):
+                if j == 0:
+                    monitoring_point=row[j].value
+                elif j == 1:
+                    velocity=row[j].value
+                elif j == 2:
+                    aceleration=row[j].value
+                elif j == 3:
+                    dem_odulada=row[j].value
                 
             mp_arr.append({"monitoring_point": monitoring_point,
-                               "velocity": velocity,
-                               "aceleration": aceleration,
-                               "dem_odulada": dem_odulada})
+                           "velocity": velocity,
+                           "aceleration": aceleration,
+                           "dem_odulada": dem_odulada})
         else:
             i += 1
     

@@ -61,7 +61,6 @@ class AddVibrationsExcelForm(forms.Form):
                                                                'required': True}))
     def save(self, pk):
         """Save method"""
-        report = Component.objects.get(pk=pk)
         excel_dict = excel_to_dict(self.cleaned_data['excel_file'])
 
         for d in excel_dict:
@@ -69,7 +68,7 @@ class AddVibrationsExcelForm(forms.Form):
                                                    velocity=d['velocity'],
                                                    acelaration=d['aceleration'],
                                                    demod_spectrum=d['dem_odulada'],
-                                                   report=report)
+                                                   report=Component.objects.get(pk=pk))
             vibrations.save()
 
 

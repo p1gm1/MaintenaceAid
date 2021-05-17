@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}MaintenanceAid: Reporte{% endblock %}
+
+{% block content %}
+
+<div class="container" style="margin-top: 3em;">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1>Reporte de maquina: {{ machine.tag_model }}</h1>
+            <br>
+            <p>El objetivo de este reporte es el de definir el estado general de
+            los componentes rotativos, electricos y estaticos mediante la recopilacion
+            y analisis de diferentes tecnicas de medidicion y analsis de condicion.
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <br>
+            <h2>Analisis Termografico</h2>
+        </div>
+    </div>
+</div>
+
+{% for objects in object_list %}
+    <div class="container" style="margin-top: 4em;">
+        <div class="row">
+            <div class="col-sm-7">
+                <h3>Componente: {{ objects.first.report.component }} {{ objects.first.report.tag_model }} </h3>
+            </div>
+        </div>
+    </div>
+    {% for object in objects %}
+        {% if object.is_active %}
+            {% if object.is_valid %}
+                <div class="container mb-5" style="margin-top: 4em;">
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <img src="{{ object.thermo_picture.url }}" 
+                                width="290px">
+                            <img src="{{ object.content_picture.url }}"
+                                width="290px">
+                        </div>
+                        <div class="col-sm-2">
+                            <br>
+                            <p>RTMax: <strong>{{ object.RTMax }}</strong></p>
+                            <br>
+                            <p>RTMin: <strong>{{ object.RTMin }}</strong></p>
+                            <br>
+                            <br>
+                            <p>RTMean: <strong>{{ object.RTMean }}</strong></p>
+                        </div>
+                        {% if object.report.t_max == object.RTMax %}
+                        <div class="col-sm-3">
+                            <br>
+                            <p>Condicion: <strong style="color:yellow;">Sequimiento</strong></p>
+                            <br>
+                            <p>Clasificacion Neta: {{ machine.neta_classification }}</p>
+                            <br>
+                            <p>Temperatura maxíma: <strong>{{ object.report.t_max }}</strong></p>
+                            <p>Temperatura miníma: <strong>{{ object.report.t_min }}</strong></p>
+                            <br>
+                        </div>
+                        {% elif object.report.t_max < object.RTMax %}
+                        <div class="col-sm-3">
+                            <br>
+                            <p>Condicion: <strong style="color:red;">Alarma</strong></p>
+                            <br>
+                            <p>Clasificacion Neta: {{ machine.neta_classification }}</p>
+                            <br>
+                            <p>Temperatura maxíma: <strong>{{ object.report.t_max }}</strong></p>
+                            <p>Temperatura miníma: <strong>{{ object.report.t_min }}</strong></p>
+                            <br>
+                        </div>
+                        {% else %}
+                        <div class="col-sm-3">
+                            <br>
+                            <p>Condicion: <strong style="color:green;">Normal</strong></p>
+                            <br>
+                            <p>Clasificacion Neta: {{ machine.neta_classification }}</p>
+                            <br>
+                            <p>Temperatura maxíma: <strong>{{ object.report.t_max }}</strong></p>
+                            <p>Temperatura miníma: <strong>{{ object.report.t_min }}</strong></p>
+                            <br>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="container mb-5" style="margin-top: 4em;">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p>Es posible que se este procesando la información de la termografia. Espera unos minutos mientras terminamos y refresca la pagina</p>
+                            <br>
+                            <p>En caso de presentarse un incoveninte con tus fotos, te enviaremos un correo notificandote los problemas encontrados.</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="container mb-5" style="margin-top: 4em;">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p>Se ha presentado un inconveniente con tu termografia, te hemos enviado un correo de notificacion.</p>
+                        <p>Puedes revisar la foto en el siguiente <a href="{% url 'reports:update_thermophoto' object.pk %}">link</a></p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <hr>
+    {% endfor %}
+{% endfor %}
+
+<div class="container" style="margin-top: 1em;">
+    <div class="row">
+        <div class="col-sm-12">
+            <br>
+            <h2>Analisis de vibraciones</h2>
+        </div>
+    </div>
+</div>
+{% if vibrations_length != 0 %}
+    {% for component in components %}
+        <div class="container" style="margin-top: 4em;">
+            <div class="row">
+                <div class="col-sm-7">
+                    <h3>Componente: {{ component.component }} {{ component.tag_model }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="container" style="margin-top: 4em;">
+            <div class="row">
+                <div class="col-sm-12">
+                    <table>
+                        <tr>
+                            <th>Punto de monitoreo</th>
+                            <th>Fecha</th>
+                            <th>Velocidad previa</th>
+                            <th>Velocidad final</th>
+                            <th>Aceleración previa</th>
+                            <th>Aceleración final</th>
+                            <th>Demod Spectrum previo</th>
+                            <th>Demod Spectrum final</th>
+                        </tr>
+                        {% for vibration in vibrations %}
+                        <tr>
+                            {% if vibration.component == component.component  %}
+                                <th>{{ vibration.monitoring_point }}</th>
+                                <th>{{ vibration.created }}</th>
+                                <th>{{ vibration.vel_prev }}</th>
+                                {% if vibration.vel_last > component.vel_max %}
+                                <th style="background-color: red">{{ vibration.vel_last }}</th>
+                                {% else %}
+                                <th>{{ vibration.vel_last }}</th>
+                                {% endif %}
+                                <th>{{ vibration.ace_prev }}</th>
+                                {% if vibration.ace_last > component.ace_max %}
+                                <th style="background-color: red;">{{ vibration.ace_last }}</th>
+                                {% else %}
+                                <th>{{ vibration.ace_last }}</th>
+                                {% endif %}
+                                <th>{{ vibration.dem_prev }}</th>
+                                {% if vibration.dem_last > component.dem_max %}
+                                <th style="background-color: red;">{{ vibration.dem_last }}</th>
+                                {% else %}
+                                <th>{{ vibration.dem_last }}</th>
+                                {% endif %}
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>           
+            </div>
+            <div class="row pt-4">
+                <div class="col-sm-12">
+                    {% for vibration in vibrations %}
+                        {% if vibration.component == component.component %}
+                            {% if vibration.flag %}
+                            <p>En el punto de monitoreo: <strong>{{ vibration.monitoring_point }}</strong> se ha encontrado una serie de valores atipicos:</p>
+                                {% for outlier in vibration.outliers %}
+                                <ul>
+                                    {% if outlier.velocity %}
+                                        <li>Una desviación de  <strong>{{ outlier.velocity }}</strong> de velocidad.</li>
+                                    {% endif %}
+                                    {% if outlier.acelaration %}
+                                        <li>Una desviación de  <strong>{{ outlier.acelaration }}</strong> de aceleración.</li>
+                                    {% endif %}
+                                    {% if outlier.demod %}
+                                        <li>Una desviación de  <strong>{{ outlier.demod }}</strong> de vibración.</li>
+                                    {% endif %}
+                                </ul>
+                                {% endfor %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    <p>Se resaltan en el sumario de vibraciones los valores atipicos encontrados, como condición de <strong style="color: red;">alarma</strong> 
+                        en caso de no señalarse se entiende que el equipo se encuentra en operación <strong style="color: green;">normal</strong>.</p>
+                </div>
+            </div>    
+        </div>
+    {% endfor %}
+<br>
+{% endif %}
+
+{% endblock %}

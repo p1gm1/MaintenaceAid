@@ -83,6 +83,10 @@ html, body {
     border-radius: 1px;
 }
 
+#line-chart {
+    min-height: 250px;
+}
+
 #footer a{
     color: whitesmoke;
 }

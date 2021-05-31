@@ -208,7 +208,7 @@ class ReportView(LoginRequiredMixin, ListView):
     """
 
     model = BasePhoto
-    template_name = "reports/create_report.html"
+    template_name = "reports/test_js.html"
     queryset = Machine.objects.all()
 
     def dispatch(self, request, *args, **kwargs):

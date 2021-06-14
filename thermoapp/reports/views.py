@@ -1,9 +1,10 @@
 # Django
-from django.forms.forms import Form
+from django.http import JsonResponse
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, FormView, UpdateView 
 from django.views.generic.list import ListView
+from django.views.generic.base import TemplateView
 
 # Models
 from thermoapp.reports.models import Component, BasePhoto, Vibrations
@@ -202,20 +203,70 @@ class AddVibrationsExcelView(LoginRequiredMixin, FormView):
 add_vibrations_excel_view = AddVibrationsExcelView.as_view()
 
 
-class ReportView(LoginRequiredMixin, ListView):
+class ReportView(LoginRequiredMixin, TemplateView):
     """Make a report of the added, 
     thermography
     """
 
-    model = BasePhoto
     template_name = "reports/test_js.html"
-    queryset = Machine.objects.all()
 
     def dispatch(self, request, *args, **kwargs):
         if request.method == 'GET':
             self.tag_model = kwargs['tag_model']
             kwargs.update({'tag_model': self.tag_model})
         return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        # q = Component.objects.filter(user=request.user,
+        #                              machine=Machine.objects.get(tag_model=self.kwargs['tag_model']))
+
+        # vibrations = [
+        #    list(Vibrations.objects.filter(report=c).values("created",
+        #                                                    "velocity", 
+        #                                                    "acelaration", 
+        #                                                    "demod_spectrum", 
+        #                                                    )) for c in q
+        #             ][0]
+
+        mps = list(Vibrations.objects.filter(report=Component.objects.get(id=1)).values_list("monitoring_point"))
+
+        mps = [ mps[i][0] for i in range(len(mps)-1) if mps[i][0] != mps[i+1][0]]
+
+        vel_list = []
+        acel_list = []
+        dem_list = []
+
+        for mp in mps:
+            q = Vibrations.objects.filter(report=Component.objects.get(id=1),
+                                          monitoring_point=mp).values_list("velocity", 
+                                                                           "acelaration", 
+                                                                           "demod_spectrum", 
+                                                                           "created")
+            for i in range(len(q)):
+                vel_list.append({"monitoring_point": mp,
+                                 "velocity": q[i][0],
+                                 "created": q[i][3]
+                })
+                acel_list.append({"monitoring_point": mp,
+                                  "acelaration": q[i][1],
+                                  "created": q[i][3]
+                })
+                dem_list.append({"monitoring_point": mp,
+                                 "demod_spectrum": q[i][2],
+                                 "created": q[i][3]
+                })
+
+        data = {
+            "velocity": vel_list,
+            "acelaration": acel_list,
+            "demod": dem_list 
+        }
+
+        if request.is_ajax():
+
+            return JsonResponse(data=data, safe=False)
+        
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         q = Component.objects.filter(user=self.request.user,
@@ -224,60 +275,61 @@ class ReportView(LoginRequiredMixin, ListView):
         mp = ''
         vib_list=[]
 
-        vibrations = [Vibrations.objects.filter(report=c) for c in q]
+        vibrations = [
+           list(Vibrations.objects.filter(report=c).values("monitoring_point", 
+                                                           "velocity", 
+                                                           "acelaration", 
+                                                           "demod_spectrum", 
+                                                           "created__month")) for c in q
+                    ]
         
-        for q in vibrations:
-            for j in range(len(q)):
-                arr_m = Vibrations.objects.filter(monitoring_point=q[j].monitoring_point)
+#        for q in vibrations:
+#            for j in range(len(q)):
+#                arr_m = Vibrations.objects.filter(monitoring_point=q[j].monitoring_point)
                 
-                if mp != arr_m.first().monitoring_point:
-                    mp = arr_m.first().monitoring_point
-                    if (len(arr_m) > 2):
-                        vib_obj = VibrationsPoints(
-                            component=arr_m.first().report.component,
-                            monitoring_point=mp,
-                            created=arr_m.last().created,
-                            vel_prev= arr_m.reverse()[len(arr_m)-2].velocity,
-                            vel_last=arr_m.last().velocity,
-                            ace_prev=arr_m.reverse()[len(arr_m)-2].acelaration,
-                            ace_last=arr_m.last().acelaration,
-                            dem_prev=arr_m.reverse()[len(arr_m)-2].demod_spectrum,
-                            dem_last=arr_m.last().demod_spectrum
-                            )
-                        vib_obj.find_outliers()
-                    else:
-                        vib_obj = VibrationsPoints(
-                            component=arr_m.first().report.component,
-                            monitoring_point=mp,
-                            created=arr_m.last().created,
-                            vel_prev= arr_m.first().velocity,
-                            vel_last=arr_m.last().velocity,
-                            ace_prev=arr_m.first().acelaration,
-                            ace_last=arr_m.last().acelaration,
-                            dem_prev=arr_m.first().demod_spectrum,
-                            dem_last=arr_m.last().demod_spectrum
-                            )
-                        vib_obj.find_outliers()
-                    vib_list.append(vib_obj)
+#                if mp != arr_m.first().monitoring_point:
+#                    mp = arr_m.first().monitoring_point
+#                    if (len(arr_m) > 2):
+#                        vib_obj = VibrationsPoints(
+#                            component=arr_m.first().report.component,
+#                            monitoring_point=mp,
+#                            created=arr_m.last().created,
+#                            vel_prev= arr_m.reverse()[len(arr_m)-2].velocity,
+#                            vel_last=arr_m.last().velocity,
+#                            ace_prev=arr_m.reverse()[len(arr_m)-2].acelaration,
+#                            ace_last=arr_m.last().acelaration,
+#                            dem_prev=arr_m.reverse()[len(arr_m)-2].demod_spectrum,
+#                            dem_last=arr_m.last().demod_spectrum
+#                            )
+#                        vib_obj.find_outliers()
+#                    else:
+#                        vib_obj = VibrationsPoints(
+#                            component=arr_m.first().report.component,
+#                            monitoring_point=mp,
+#                            created=arr_m.last().created,
+#                            vel_prev= arr_m.first().velocity,
+#                            vel_last=arr_m.last().velocity,
+#                            ace_prev=arr_m.first().acelaration,
+#                            ace_last=arr_m.last().acelaration,
+#                            dem_prev=arr_m.first().demod_spectrum,
+#                            dem_last=arr_m.last().demod_spectrum
+#                            )
+#                        vib_obj.find_outliers()
+#                    vib_list.append(vib_obj)
                     
-                else:
-                    continue
+#                else:
+#                    continue
         
         self.extra_context = {
-            'machine': self.queryset.get(tag_model=self.kwargs['tag_model']),
-            'vibrations': vib_list,
-            'components': Component.objects.filter(user=self.request.user,
-                                     machine=Machine.objects.get(tag_model=self.kwargs['tag_model'])),
+            'machine': Machine.objects.get(tag_model=self.kwargs['tag_model']),
+            'vibrations': vibrations[0],
+            'photos': [BasePhoto.objects.filter(report=c) for c in q],
+            'components': Component.objects.filter(
+                            user=self.request.user,
+                            machine=Machine.objects.get(tag_model=self.kwargs['tag_model'])),
                               }
         return super().get_context_data(**kwargs)
 
-    def get_queryset(self):
-        q = Component.objects.filter(user=self.request.user,
-                                     machine=Machine.objects.get(tag_model=self.kwargs['tag_model']))
-        
-        queryset = [BasePhoto.objects.filter(report=c) for c in q]
-
-        return queryset
 
 report_view = ReportView.as_view()
 

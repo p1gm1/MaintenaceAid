@@ -217,17 +217,6 @@ class ReportView(LoginRequiredMixin, TemplateView):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        # q = Component.objects.filter(user=request.user,
-        #                              machine=Machine.objects.get(tag_model=self.kwargs['tag_model']))
-
-        # vibrations = [
-        #    list(Vibrations.objects.filter(report=c).values("created",
-        #                                                    "velocity", 
-        #                                                    "acelaration", 
-        #                                                    "demod_spectrum", 
-        #                                                    )) for c in q
-        #             ][0]
-
         mps = list(Vibrations.objects.filter(report=Component.objects.get(id=1)).values_list("monitoring_point"))
 
         mps = [ mps[i][0] for i in range(len(mps)-1) if mps[i][0] != mps[i+1][0]]
@@ -244,15 +233,15 @@ class ReportView(LoginRequiredMixin, TemplateView):
                                                                            "created")
             for i in range(len(q)):
                 vel_list.append({"monitoring_point": mp,
-                                 "velocity": q[i][0],
+                                 f"{mp}": q[i][0],
                                  "created": q[i][3]
                 })
                 acel_list.append({"monitoring_point": mp,
-                                  "acelaration": q[i][1],
+                                  f"{mp}": q[i][1],
                                   "created": q[i][3]
                 })
                 dem_list.append({"monitoring_point": mp,
-                                 "demod_spectrum": q[i][2],
+                                 f"{mp}": q[i][2],
                                  "created": q[i][3]
                 })
 

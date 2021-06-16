@@ -47,6 +47,9 @@ class Machine(models.Model):
 								 blank=True, 
 								 null=True, 
 								 unique=True)
+	instalation_date = models.DateField(_("Fecha de instalación"),
+										blank=True,
+										null=True)
 
 	def __str__(self):
 		return'{}'.format(self.tag_model)

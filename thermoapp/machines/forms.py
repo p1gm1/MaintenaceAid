@@ -13,8 +13,8 @@ class MachineCreateForm(forms.Form):
                                widget=forms.TextInput(attrs={'class': 'form-control',
                                                              'required': True}))
     model = forms.CharField(label='Modelo',
-                                    max_length=125,
-                                    widget=forms.TextInput(attrs={'class': 'form-control',
+                            max_length=125,
+                            widget=forms.TextInput(attrs={'class': 'form-control',
                                                                   'required': False}))
     neta_classification = forms.CharField(label='Clasificacion NETA',
                                          max_length=25,
@@ -33,9 +33,12 @@ class MachineCreateForm(forms.Form):
                                     widget=forms.TextInput(attrs={'class': 'form-control',
                                                                   'required': True}))
     tag_model = forms.CharField(label='Tag de maquina',
-                                    max_length=55,
-                                    widget=forms.TextInput(attrs={'class': 'form-control',
-                                                                  'required': True}))
+                                max_length=55,
+                                widget=forms.TextInput(attrs={'class': 'form-control',
+                                                              'required': True}))
+    instalation_date = forms.DateField(label="Fecha de instalación",
+                                       widget=forms.DateInput(attrs={'class': 'form-control',
+                                                                     'required': True}))                                  
 
     def save(self, request):
         """Save method""" 

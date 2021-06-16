@@ -7,7 +7,7 @@ from django.views.generic.list import ListView
 from django.views.generic.base import TemplateView
 
 # Models
-from thermoapp.reports.models import Component, BasePhoto, Vibrations
+from thermoapp.reports.models import Component, BasePhoto, Vibrations, Report
 from thermoapp.machines.models import Machine
 
 # Forms

@@ -112,3 +112,18 @@ class Vibrations(models.Model):
 
 	def __str__(self):
 		return'{}-{}'.format(self.report.tag_model, self.id)
+
+#Model Report
+class Report(models.Model):
+	user = models.ForeignKey(User,
+							 on_delete=models.CASCADE,
+							 blank=True,
+							 null=True)
+	machine = models.ForeignKey(Machine,
+								on_delete=models.CASCADE,
+								blank=True,
+								null=True)
+	component = models.ForeignKey(Component,
+								  on_delete=models.CASCADE,
+								  blank=True,
+								  null=True)

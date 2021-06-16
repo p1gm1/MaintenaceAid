@@ -51,10 +51,10 @@
                 {% endif %}
             </h3>
             <div class="row mt-2" style="font-size: 1.2em;">
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <b>Modelo: {{ object.model }}</b>  
                 </div>
-                <div class="col-sm-5">
+                <div class="col-sm-6">
                     <b>Clasificacion NETA: {{ object.neta_classification }}</b>  
                 </div>
                 {% if object.report_number == 1 %}
@@ -68,19 +68,22 @@
                 {% endif %}
             </div>
             <div class="row mt-1" style="font-size: 1.2em;">
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <b>Serial: {{ object.serial_number }}</b>  
                 </div>
-                <div class="col-sm-5">
+                <div class="col-sm-6">
                     <b>Codigo SAP: {{ object.sap_code }}</b>  
                 </div>
             </div>
             <div class="row mt-1" style="font-size: 1.2em;">
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <b>Ubicacion: {{ object.location }}</b>  
                 </div>
                 <div class="col-sm-5">
                     <b>Tipo de maquina: {{ object.machine_type }}</b>  
+                </div>
+                <div class="col-sm-4">
+                    <b>Fecha de instalación: {{ object.instalation_date }}</b>
                 </div>
             </div>
         </div>

@@ -16,8 +16,6 @@ from thermoapp.reports.forms import (AddTermographyForm,
                                      AddVibrationForm,
                                      AddVibrationsExcelForm)
 
-# utils
-from thermoapp.reports.utils import VibrationsPoints
 
 class ComponentCreateView(LoginRequiredMixin, CreateView):
     """Machine component create
@@ -208,7 +206,7 @@ class ReportView(LoginRequiredMixin, TemplateView):
     thermography
     """
 
-    template_name = "reports/test_js.html"
+    template_name = "reports/create_report.html"
 
     def dispatch(self, request, *args, **kwargs):
         if request.method == 'GET':
@@ -224,6 +222,7 @@ class ReportView(LoginRequiredMixin, TemplateView):
         vel_list = []
         acel_list = []
         dem_list = []
+        data_table = []
 
         for mp in mps:
             q = Vibrations.objects.filter(report=Component.objects.get(id=1),
@@ -231,6 +230,15 @@ class ReportView(LoginRequiredMixin, TemplateView):
                                                                            "acelaration", 
                                                                            "demod_spectrum", 
                                                                            "created")
+            d = Vibrations.objects.filter(report=Component.objects.get(id=1),
+                                          monitoring_point=mp)
+
+            created_last = d.last().created
+
+            for j in range(len(d)):
+                if d[j].created < created_last:
+                    created_prev = d[j].created
+
             for i in range(len(q)):
                 vel_list.append({"monitoring_point": mp,
                                  f"{mp}": q[i][0],
@@ -244,11 +252,24 @@ class ReportView(LoginRequiredMixin, TemplateView):
                                  f"{mp}": q[i][2],
                                  "created": q[i][3]
                 })
+            
+            
+            data_table.append({"monitoring_point": mp,
+                               "date": created_last,
+                               "prev vel": d.get(created=created_prev).velocity,
+                               "last vel": d.get(created=created_last).velocity,
+                               "prev acel": d.get(created=created_prev).acelaration,
+                               "last acel": d.get(created=created_last).acelaration,
+                               "demod prev": d.get(created=created_prev).demod_spectrum,
+                               "demod last": d.get(created=created_last).demod_spectrum
+                })
+
 
         data = {
             "velocity": vel_list,
             "acelaration": acel_list,
-            "demod": dem_list 
+            "demod": dem_list ,
+            "data": data_table
         }
 
         if request.is_ajax():
@@ -261,61 +282,10 @@ class ReportView(LoginRequiredMixin, TemplateView):
         q = Component.objects.filter(user=self.request.user,
                                      machine=Machine.objects.get(tag_model=self.kwargs['tag_model']))
         
-        mp = ''
-        vib_list=[]
-
-        vibrations = [
-           list(Vibrations.objects.filter(report=c).values("monitoring_point", 
-                                                           "velocity", 
-                                                           "acelaration", 
-                                                           "demod_spectrum", 
-                                                           "created__month")) for c in q
-                    ]
-        
-#        for q in vibrations:
-#            for j in range(len(q)):
-#                arr_m = Vibrations.objects.filter(monitoring_point=q[j].monitoring_point)
-                
-#                if mp != arr_m.first().monitoring_point:
-#                    mp = arr_m.first().monitoring_point
-#                    if (len(arr_m) > 2):
-#                        vib_obj = VibrationsPoints(
-#                            component=arr_m.first().report.component,
-#                            monitoring_point=mp,
-#                            created=arr_m.last().created,
-#                            vel_prev= arr_m.reverse()[len(arr_m)-2].velocity,
-#                            vel_last=arr_m.last().velocity,
-#                            ace_prev=arr_m.reverse()[len(arr_m)-2].acelaration,
-#                            ace_last=arr_m.last().acelaration,
-#                            dem_prev=arr_m.reverse()[len(arr_m)-2].demod_spectrum,
-#                            dem_last=arr_m.last().demod_spectrum
-#                            )
-#                        vib_obj.find_outliers()
-#                    else:
-#                        vib_obj = VibrationsPoints(
-#                            component=arr_m.first().report.component,
-#                            monitoring_point=mp,
-#                            created=arr_m.last().created,
-#                            vel_prev= arr_m.first().velocity,
-#                            vel_last=arr_m.last().velocity,
-#                            ace_prev=arr_m.first().acelaration,
-#                            ace_last=arr_m.last().acelaration,
-#                            dem_prev=arr_m.first().demod_spectrum,
-#                            dem_last=arr_m.last().demod_spectrum
-#                            )
-#                        vib_obj.find_outliers()
-#                    vib_list.append(vib_obj)
-                    
-#                else:
-#                    continue
-        
         self.extra_context = {
             'machine': Machine.objects.get(tag_model=self.kwargs['tag_model']),
-            'vibrations': vibrations[0],
-            'photos': [BasePhoto.objects.filter(report=c) for c in q],
-            'components': Component.objects.filter(
-                            user=self.request.user,
-                            machine=Machine.objects.get(tag_model=self.kwargs['tag_model'])),
+            'photo_list': [BasePhoto.objects.filter(report=c) for c in q],
+            'components': q,
                               }
         return super().get_context_data(**kwargs)
 

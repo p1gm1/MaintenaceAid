@@ -3,6 +3,60 @@ $(function charts () {
         url: window.location.pathname,
         type: 'get',
         success: function (response) {
+            $('#articleTable tbody').html("")
+            console.log(response["data"].length)
+            for (let i = 0; i < response["data"].length; i++) {
+                let row = '<tr>'
+                row += '<td>' + response["data"][i]["monitoring_point"] + '</td>'
+                row += '<td>' + response["data"][i]["date"] + '</td>'
+                row += '<td>' + response["data"][i]["prev vel"] + '</td>'
+                row += '<td>' + response["data"][i]["last vel"] + '</td>'
+                row += '<td>' + response["data"][i]["prev acel"] + '</td>'
+                row += '<td>' + response["data"][i]["last acel"] + '</td>'
+                row += '<td>' + response["data"][i]["demod prev"] + '</td>'
+                row += '<td>' + response["data"][i]["demod last"] + '</td>'
+                row += '</tr>'
+                $('#articleTable tbody').append(row)
+            }
+            $('#articleTable').DataTable({
+                language: {
+                    "decimal": "",
+                    "emptyTable": "No hay información",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+                    "infoEmpty": "Mostrando 0 a 0 de 0 Entradas",
+                    "infoFiltered": "(Filtrando de _MAX_ total entradas)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "Mostrando _MENU_ entradas",
+                    "loadingRecords": "Cargando...",
+                    "processing": "Procesando...",
+                    "search": "Buscar:",
+                    "zeroRecords": "Sin resultados encontrados",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    },
+                },
+                responsive: true,
+                "columns": [
+                    {"data": "Punto de monitoreo"},
+                    {"data": "Fecha"},
+                    {"data": "Velocidad previa"},
+                    {"data": "Velocidad final"},
+                    {"data": "Aceleración previa"},
+                    {"data": "Aceleración final"},
+                    {"data": "Demod Spectrum previo"},
+                    {"data": "Demod Spectrum final"}
+                ],
+                "columnDefs": [{
+                    "targets": [2, 3, 4, 5, 6, 7],
+                    render(v){
+                        return Number(v).toFixed(2)
+                    }
+                }], 
+            })
             let vel_keys = []
             let acel_keys = []
             let demod_keys = []

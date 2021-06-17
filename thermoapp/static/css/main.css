@@ -5,6 +5,27 @@ html, body {
     font-family: 'Roboto', sans-serif;
 }
 
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table.dataTable thead {
+    background-color:#f0ad4e;
+    color:aliceblue;
+} 
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
 .post-container {
     background: #fff;
     border: 1px solid #e6e6e6;
@@ -26,6 +47,11 @@ html, body {
 
 .card-img-top{
     max-width: 65%;
+}
+
+.chart {
+    height: 275px; 
+    width: 1100px;
 }
 
 #profile-box {
@@ -91,23 +117,3 @@ html, body {
     color: whitesmoke;
 }
 
-table {
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-}
-
-table.dataTable thead {
-    background-color:#f0ad4e;
-    color:aliceblue;
-} 
-
-td, th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-}
-
-tr:nth-child(even) {
-    background-color: #dddddd;
-}

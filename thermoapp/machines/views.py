@@ -1,5 +1,6 @@
 # Django
 from django.urls import reverse
+from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import  FormView, UpdateView
@@ -22,6 +23,20 @@ class MachineListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = Machine.objects.filter(register_by=self.request.user)
         return queryset
+
+    def get_context_data(self, **kwargs):
+        
+        machine_list = self.get_queryset()
+        paginator = Paginator(machine_list, 3) 
+
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        self.extra_context = {
+            'page_obj': page_obj
+        } 
+
+        return super().get_context_data(**kwargs)
 
 machine_detail_view = MachineListView.as_view()
 

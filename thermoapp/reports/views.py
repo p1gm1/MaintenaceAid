@@ -1,6 +1,7 @@
 # Django
 from django.http import JsonResponse
 from django.urls import reverse
+from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, FormView, UpdateView 
 from django.views.generic.list import ListView
@@ -73,6 +74,20 @@ class ComponentListView(LoginRequiredMixin, ListView):
         queryset = Component.objects.filter(user=self.request.user,
                                             machine=Machine.objects.get(tag_model=self.kwargs['tag_model']))
         return queryset
+
+    def get_context_data(self, **kwargs):
+        
+        component_list = self.get_queryset()
+        paginator = Paginator(component_list, 2) 
+
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        self.extra_context = {
+            'page_obj': page_obj
+        } 
+
+        return super().get_context_data(**kwargs)
 
 list_component_view = ComponentListView.as_view()
 
@@ -281,11 +296,11 @@ class ReportView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         q = Component.objects.filter(user=self.request.user,
                                      machine=Machine.objects.get(tag_model=self.kwargs['tag_model']))
-        
+
         self.extra_context = {
             'machine': Machine.objects.get(tag_model=self.kwargs['tag_model']),
             'photo_list': [BasePhoto.objects.filter(report=c) for c in q],
-            'components': q,
+            'components': q
                               }
         return super().get_context_data(**kwargs)
 

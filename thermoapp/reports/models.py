@@ -111,7 +111,7 @@ class Vibrations(models.Model):
 									   blank=True)
 
 	def __str__(self):
-		return'{}-{}'.format(self.report.tag_model, self.id)
+		return'{}'.format(self.id)
 
 #Model Report
 class Report(models.Model):

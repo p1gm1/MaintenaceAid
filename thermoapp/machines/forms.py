@@ -35,10 +35,7 @@ class MachineCreateForm(forms.Form):
     tag_model = forms.CharField(label='Tag de maquina',
                                 max_length=55,
                                 widget=forms.TextInput(attrs={'class': 'form-control',
-                                                              'required': True}))
-    instalation_date = forms.DateField(label="Fecha de instalación",
-                                       widget=forms.DateInput(attrs={'class': 'form-control',
-                                                                     'required': True}))                                  
+                                                              'required': True}))                                 
 
     def save(self, request):
         """Save method""" 

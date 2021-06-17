@@ -1,6 +1,3 @@
-# Models
-from thermoapp.reports.models import Component
-
 # Pyxl
 from openpyxl import load_workbook
 
@@ -18,13 +15,13 @@ def excel_to_dict(path_to_file):
         if i != 0:
             for j in range(len(row)):
                 if j == 0:
-                    monitoring_point=row[j].value
+                    monitoring_point=str(row[j].value).strip()
                 elif j == 1:
-                    velocity=row[j].value
+                    velocity=float(row[j].value)
                 elif j == 2:
-                    aceleration=row[j].value
+                    aceleration=float(row[j].value)
                 elif j == 3:
-                    dem_odulada=row[j].value
+                    dem_odulada=float(row[j].value)
                 
             mp_arr.append({"monitoring_point": monitoring_point,
                            "velocity": velocity,
@@ -32,5 +29,5 @@ def excel_to_dict(path_to_file):
                            "dem_odulada": dem_odulada})
         else:
             i += 1
-    
+    print(mp_arr)
     return mp_arr

@@ -232,7 +232,7 @@ class ReportView(LoginRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         mps = list(Vibrations.objects.filter(report=Component.objects.get(id=1)).values_list("monitoring_point"))
 
-        mps = [ mps[i][0] for i in range(len(mps)-1) if mps[i][0] != mps[i+1][0]]
+        mps = list(dict.fromkeys([mps[i][0] for i in range(len(mps))]))
 
         vel_list = []
         acel_list = []

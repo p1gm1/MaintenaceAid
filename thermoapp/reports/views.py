@@ -226,11 +226,15 @@ class ReportView(LoginRequiredMixin, TemplateView):
     def dispatch(self, request, *args, **kwargs):
         if request.method == 'GET':
             self.tag_model = kwargs['tag_model']
-            kwargs.update({'tag_model': self.tag_model})
+            self.id = kwargs['pk']
+            kwargs.update({
+                'tag_model': self.tag_model,
+                'id': self.id
+            })
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        mps = list(Vibrations.objects.filter(report=Component.objects.get(id=1)).values_list("monitoring_point"))
+        mps = list(Vibrations.objects.filter(report=Component.objects.get(id=self.id)).values_list("monitoring_point"))
 
         mps = list(dict.fromkeys([mps[i][0] for i in range(len(mps))]))
 
@@ -240,12 +244,12 @@ class ReportView(LoginRequiredMixin, TemplateView):
         data_table = []
 
         for mp in mps:
-            q = Vibrations.objects.filter(report=Component.objects.get(id=1),
+            q = Vibrations.objects.filter(report=Component.objects.get(id=self.id),
                                           monitoring_point=mp).values_list("velocity", 
                                                                            "acelaration", 
                                                                            "demod_spectrum", 
                                                                            "created")
-            d = Vibrations.objects.filter(report=Component.objects.get(id=1),
+            d = Vibrations.objects.filter(report=Component.objects.get(id=self.id),
                                           monitoring_point=mp)
 
             created_last = d.last().created
@@ -294,13 +298,12 @@ class ReportView(LoginRequiredMixin, TemplateView):
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        q = Component.objects.filter(user=self.request.user,
-                                     machine=Machine.objects.get(tag_model=self.kwargs['tag_model']))
+        q = Component.objects.get(id=self.id)
 
         self.extra_context = {
             'machine': Machine.objects.get(tag_model=self.kwargs['tag_model']),
-            'photo_list': [BasePhoto.objects.filter(report=c) for c in q],
-            'components': q
+            'photo_list': BasePhoto.objects.filter(report=q),
+            'component': q
                               }
         return super().get_context_data(**kwargs)
 

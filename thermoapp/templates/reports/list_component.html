@@ -34,10 +34,16 @@
             </div>   
         </div>
         <div class="col-sm-2">
-            <div class="row mt-2 mb-5">
+            <div class="row mt-2">
                 <a href="{% url 'reports:add_termography' object.pk %}"
                    class="mr-4 btn btn-sm btn-warning">
                     Agregar termografias
+                </a>
+            </div>
+            <div class="row mt-2">
+                <a href="{% url 'reports:add_vibration' object.pk %}"
+                   class="mr-4 btn btn-sm btn-warning">
+                    Agregar vibraciones
                 </a>
             </div>
             <div class="row mt-2">
@@ -46,24 +52,18 @@
                     Actualizar componente
                 </a>
             </div>
+            <div class="row mt-2">
+                <a href="{% url 'reports:create_report' object.machine.tag_model object.pk %}"
+                   class="mr-4 btn btn-sm btn-success">
+                    Generar reporte
+                </a>
+            </div>
         </div>
     </div>
 </div>
 <hr>
 {% endfor %}
 
-<div class="col-sm-10 offset-1">
-    <a href="{% url 'reports:add_vibration' object_list.first.pk %}"
-       class="mr-4 btn btn-warning btn-block">
-        Agregar vibraciones
-    </a>
-</div>
-<div class="col-sm-10 offset-1">
-    <a href="{% url 'reports:create_report' object_list.first.machine.tag_model %}"
-       class="btn btn-success btn-block mt-5">
-        Generar reporte
-    </a>
-</div>
 
 {% include "pagination.html" %}
 

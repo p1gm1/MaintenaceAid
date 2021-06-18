@@ -25,98 +25,96 @@
     </div>
 </div>
 
-{% for component in components %}
-    <div class="container" style="margin-top: 4em;">
-        <div class="row">
-            <div class="col-sm-7">
-                <h3>Componente: {{ component.component }} {{ component.tag_model }} </h3>
-            </div>
+
+<div class="container" style="margin-top: 4em;">
+    <div class="row">
+        <div class="col-sm-7">
+            <h3>Componente: {{ component.component }} {{ component.tag_model }} </h3>
         </div>
     </div>
-    {% for photos in photo_list %}
-        {% for photo in photos %}
-            {% if photo.report == component %}
-                {% if photo.is_active %}
-                    {% if photo.is_valid %}
-                        <div class="container mb-5" style="margin-top: 4em;">
-                            <div class="row">
-                                <div class="col-sm-7">
-                                    <img src="{{ photo.thermo_picture.url }}" 
-                                        width="290px">
-                                    <img src="{{ photo.content_picture.url }}"
-                                        width="290px">
-                                </div>
-                                <div class="col-sm-2">
-                                    <br>
-                                    <p>RTMax: <strong>{{ photo.RTMax }} °C</strong></p>
-                                    <br>
-                                    <p>RTMin: <strong>{{ photo.RTMin }} °C</strong></p>
-                                    <br>
-                                    <br>
-                                    <p>RTMean: <strong>{{ photo.RTMean }} °C</strong></p>
-                                </div>
-                                {% if photo.report.t_max == photo.RTMax %}
-                                <div class="col-sm-3">
-                                    <br>
-                                    <p>Condicion: <strong style="color:yellow;">Sequimiento</strong></p>
-                                    <br>
-                                    <p>Clasificacion Neta: {{ machine.neta_classification }}</p>
-                                    <br>
-                                    <p>Temperatura maxíma: <strong>{{ photo.report.t_max }}</strong></p>
-                                    <p>Temperatura miníma: <strong>{{ photo.report.t_min }}</strong></p>
-                                    <br>
-                                </div>
-                                {% elif photo.report.t_max < photo.RTMax %}
-                                <div class="col-sm-3">
-                                    <br>
-                                    <p>Condicion: <strong style="color:red;">Alarma</strong></p>
-                                    <br>
-                                    <p>Clasificacion Neta: {{ machine.neta_classification }}</p>
-                                    <br>
-                                    <p>Temperatura maxíma: <strong>{{ photo.report.t_max }}</strong></p>
-                                    <p>Temperatura miníma: <strong>{{ photo.report.t_min }}</strong></p>
-                                    <br>
-                                </div>
-                                {% else %}
-                                <div class="col-sm-3">
-                                    <br>
-                                    <p>Condicion: <strong style="color:green;">Normal</strong></p>
-                                    <br>
-                                    <p>Clasificacion Neta: {{ machine.neta_classification }}</p>
-                                    <br>
-                                    <p>Temperatura maxíma: <strong>{{ photo.report.t_max }}</strong></p>
-                                    <p>Temperatura miníma: <strong>{{ photo.report.t_min }}</strong></p>
-                                    <br>
-                                </div>
-                                {% endif %}
+</div>
+{% for photo in photo_list %}
+    {% if photo.report == component %}
+        {% if photo.is_active %}
+            {% if photo.is_valid %}
+                <div class="container mb-5" style="margin-top: 4em;">
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <img src="{{ photo.thermo_picture.url }}" 
+                                 width="290px">
+                            <img src="{{ photo.content_picture.url }}"
+                                 width="290px">
+                        </div>
+                        <div class="col-sm-2">
+                            <br>
+                            <p>RTMax: <strong>{{ photo.RTMax }} °C</strong></p>
+                            <br>
+                            <p>RTMin: <strong>{{ photo.RTMin }} °C</strong></p>
+                            <br>
+                            <br>
+                            <p>RTMean: <strong>{{ photo.RTMean }} °C</strong></p>
+                        </div>
+                        {% if photo.report.t_max == photo.RTMax %}
+                            <div class="col-sm-3">
+                                <br>
+                                <p>Condicion: <strong style="color:yellow;">Sequimiento</strong></p>
+                                <br>
+                                <p>Clasificacion Neta: {{ machine.neta_classification }}</p>
+                                <br>
+                                <p>Temperatura maxíma: <strong>{{ photo.report.t_max }}</strong></p>
+                                <p>Temperatura miníma: <strong>{{ photo.report.t_min }}</strong></p>
+                                <br>
+                            </div>
+                        {% elif photo.report.t_max < photo.RTMax %}
+                            <div class="col-sm-3">
+                                <br>
+                                <p>Condicion: <strong style="color:red;">Alarma</strong></p>
+                                <br>
+                                <p>Clasificacion Neta: {{ machine.neta_classification }}</p>
+                                <br>
+                                <p>Temperatura maxíma: <strong>{{ photo.report.t_max }}</strong></p>
+                                <p>Temperatura miníma: <strong>{{ photo.report.t_min }}</strong></p>
+                                <br>
+                            </div>
+                        {% else %}
+                            <div class="col-sm-3">
+                                <br>
+                                <p>Condicion: <strong style="color:green;">Normal</strong></p>
+                                <br>
+                                <p>Clasificacion Neta: {{ machine.neta_classification }}</p>
+                                <br>
+                                <p>Temperatura maxíma: <strong>{{ photo.report.t_max }}</strong></p>
+                                <p>Temperatura miníma: <strong>{{ photo.report.t_min }}</strong></p>
+                                <br>
+                            </div>
+                        {% endif %}
                             </div>
                         </div>
-                    {% else %}
-                        <div class="container mb-5" style="margin-top: 4em;">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <p>Es posible que se este procesando la información de la termografia. Espera unos minutos mientras terminamos y refresca la pagina</p>
-                                    <br>
-                                    <p>En caso de presentarse un incoveninte con tus fotos, te enviaremos un correo notificandote los problemas encontrados.</p>
-                                </div>
-                            </div>
-                        </div>
-                    {% endif %}
-                {% else %}
-                    <div class="container mb-5" style="margin-top: 4em;">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <p>Se ha presentado un inconveniente con tu termografia, te hemos enviado un correo de notificacion.</p>
-                                <p>Puedes revisar la foto en el siguiente <a href="{% url 'reports:update_thermophoto' object.pk %}">link</a></p>
-                            </div>
+            {% else %}
+                <div class="container mb-5" style="margin-top: 4em;">
+                    <div class="row">
+                        <div class="col-sm-12">
+                                <p>Es posible que se este procesando la información de la termografia. Espera unos minutos mientras terminamos y refresca la pagina</p>
+                                <br>
+                                <p>En caso de presentarse un incoveninte con tus fotos, te enviaremos un correo notificandote los problemas encontrados.</p>
                         </div>
                     </div>
-                {% endif %}
-            {% endif %}        
-        {% endfor %}
-        <hr>
-    {% endfor %}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="container mb-5" style="margin-top: 4em;">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p>Se ha presentado un inconveniente con tu termografia, te hemos enviado un correo de notificacion.</p>
+                        <p>Puedes revisar la foto en el siguiente <a href="{% url 'reports:update_thermophoto' object.pk %}">link</a></p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}        
+    <hr>
 {% endfor %}
+
 
 <div class="container" style="margin-top: 1em;">
     <div class="row">
